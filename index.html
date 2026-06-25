@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aguas Nuevo Sur — Sistema de Monitoreo IoT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --blue-900: #042C53;
+    --blue-800: #0C447C;
+    --blue-600: #185FA5;
+    --blue-400: #378ADD;
+    --blue-200: #85B7EB;
+    --blue-100: #B5D4F4;
+    --blue-50: #E6F1FB;
+    --teal-600: #0F6E56;
+    --teal-400: #1D9E75;
+    --teal-200: #5DCAA5;
+    --amber-400: #BA7517;
+    --amber-200: #EF9F27;
+    --amber-50: #FAEEDA;
+    --red-600: #A32D2D;
+    --red-400: #E24B4A;
+    --red-50: #FCEBEB;
+    --green-400: #639922;
+    --green-50: #EAF3DE;
+    --gray-900: #2C2C2A;
+    --gray-800: #444441;
+    --gray-600: #5F5E5A;
+    --gray-200: #B4B2A9;
+    --gray-100: #D3D1C7;
+    --gray-50: #F1EFE8;
+    --bg: #060E1A;
+    --bg-card: #0D1B2A;
+    --bg-card2: #0F2236;
+    --border: rgba(55, 138, 221, 0.18);
+    --border-bright: rgba(55, 138, 221, 0.35);
+    --text-primary: #E8F4FF;
+    --text-secondary: #7FAFD4;
+    --text-muted: #4A7499;
+    --accent: #00C9FF;
+    --accent2: #378ADD;
+    --success: #1D9E75;
+    --warning: #EF9F27;
+    --danger: #E24B4A;
+    --critical: #FF3B3B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── LOGIN ─────────────────────────────── */
+  #login-screen {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .login-bg-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(55,138,221,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(55,138,221,0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .login-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,201,255,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .login-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-bright);
+    border-radius: 20px;
+    padding: 48px 52px;
+    width: 440px;
+    max-width: 95vw;
+  }
+
+  .login-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  .logo-icon {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .logo-text { line-height: 1.2; }
+  .logo-text .brand { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; }
+  .logo-text .sub { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; }
+
+  .login-title { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .login-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 32px; }
+
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  .form-group input {
+    width: 100%;
+    background: rgba(55,138,221,0.07);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-group input:focus { border-color: var(--accent2); background: rgba(55,138,221,0.1); }
+  .form-group input::placeholder { color: var(--text-muted); }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--blue-600), var(--accent2));
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 8px;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.3px;
+  }
+
+  .login-btn:hover { opacity: 0.9; }
+  .login-btn:active { transform: scale(0.99); }
+
+  .login-hint { margin-top: 16px; text-align: center; font-size: 12px; color: var(--text-muted); }
+  .login-hint span { color: var(--accent); cursor: pointer; }
+
+  /* ─── MAIN APP ───────────────────────────── */
+  #app { display: none; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 68px;
+    background: var(--bg-card);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    z-index: 100;
+    gap: 6px;
+  }
+
+  .sidebar-logo {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+
+  .nav-item {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .nav-item:hover { background: rgba(55,138,221,0.12); color: var(--text-secondary); }
+  .nav-item.active { background: rgba(55,138,221,0.2); color: var(--accent); }
+
+  .nav-item .badge {
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 16px; height: 16px;
+    background: var(--danger);
+    border-radius: 50%;
+    font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700;
+    border: 2px solid var(--bg-card);
+  }
+
+  .sidebar-bottom { margin-top: auto; }
+
+  /* TOPBAR */
+  .topbar {
+    position: fixed;
+    top: 0; left: 68px; right: 0;
+    height: 60px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 99;
+    gap: 16px;
+  }
+
+  .topbar-title { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 0.5px; flex: 1; }
+  .topbar-title span { color: var(--accent); }
+
+  .system-status {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
+    background: rgba(29,158,117,0.12);
+    border: 1px solid rgba(29,158,117,0.3);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--success);
+    font-weight: 500;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: pulse-dot 2s infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(29,158,117,0.4); }
+    50% { box-shadow: 0 0 0 4px rgba(29,158,117,0); }
+  }
+
+  .topbar-time { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--text-secondary); font-weight: 500; }
+
+  .topbar-user {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 14px;
+    background: rgba(55,138,221,0.08);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .user-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: white;
+  }
+
+  .logout-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* MAIN */
+  .main {
+    margin-left: 68px;
+    padding-top: 60px;
+    min-height: 100vh;
+  }
+
+  .content { padding: 24px; }
+
+  .page-header { margin-bottom: 24px; }
+  .page-header h1 { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .page-header h2 { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; }
+
+  /* KPI CARDS */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .kpi-card:hover { border-color: var(--border-bright); }
+
+  .kpi-card.alert-card { border-color: rgba(226,75,74,0.3); background: rgba(226,75,74,0.04); }
+  .kpi-card.warn-card { border-color: rgba(239,159,39,0.3); background: rgba(239,159,39,0.04); }
+
+  .kpi-accent {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+  }
+
+  .kpi-accent.green { background: linear-gradient(90deg, var(--success), #5DCAA5); }
+  .kpi-accent.amber { background: linear-gradient(90deg, var(--warning), #FAC775); }
+  .kpi-accent.red { background: linear-gradient(90deg, var(--danger), #FF6B6B); }
+
+  .kpi-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .kpi-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+  .kpi-icon { font-size: 18px; color: var(--text-muted); }
+
+  .kpi-value { font-family: 'Rajdhani', sans-serif; font-size: 38px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .kpi-unit { font-size: 14px; font-weight: 400; color: var(--text-secondary); margin-left: 3px; }
+
+  .kpi-delta {
+    font-size: 12px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .kpi-delta.up { color: var(--success); }
+  .kpi-delta.down { color: var(--danger); }
+  .kpi-delta.neutral { color: var(--text-muted); }
+
+  /* CHARTS ROW */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .chart-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .chart-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .chart-controls { display: flex; gap: 6px; }
+
+  .ctrl-btn {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .ctrl-btn.active { background: rgba(55,138,221,0.15); border-color: var(--accent2); color: var(--accent); }
+  .ctrl-btn:hover:not(.active) { border-color: var(--border-bright); color: var(--text-secondary); }
+
+  .legend-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* GAUGE */
+  .gauges-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .gauge-wrap {
+    background: var(--bg-card2);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .gauge-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .gauge-value { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; }
+  .gauge-unit { font-size: 12px; color: var(--text-secondary); font-weight: 400; margin-left: 2px; }
+
+  .gauge-bar-bg { height: 6px; background: rgba(55,138,221,0.12); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  .gauge-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+
+  /* CHARTS ROW 2 */
+  .charts-row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* ALERTS TABLE */
+  .alerts-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .alert-table { width: 100%; border-collapse: collapse; }
+
+  .alert-table th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0 12px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .alert-table td {
+    padding: 13px 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(55,138,221,0.06);
+  }
+
+  .alert-table tr:last-child td { border-bottom: none; }
+  .alert-table tr:hover td { background: rgba(55,138,221,0.04); }
+
+  .alert-id { font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-primary); }
+
+  .risk-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .risk-critico { background: rgba(255,59,59,0.15); color: #FF6B6B; border: 1px solid rgba(255,59,59,0.3); }
+  .risk-alto { background: rgba(239,159,39,0.15); color: #FAC775; border: 1px solid rgba(239,159,39,0.3); }
+  .risk-medio { background: rgba(55,138,221,0.15); color: var(--accent); border: 1px solid rgba(55,138,221,0.3); }
+  .risk-bajo { background: rgba(29,158,117,0.15); color: #5DCAA5; border: 1px solid rgba(29,158,117,0.3); }
+
+  .action-link { color: var(--accent); font-size: 12px; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+
+  .section-tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+
+  .section-tab {
+    padding: 8px 18px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    margin-bottom: -1px;
+  }
+
+  .section-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .section-header h3 { font-size: 14px; font-weight: 600; }
+
+  .filter-row { display: flex; gap: 8px; }
+
+  .filter-select {
+    padding: 6px 12px;
+    background: rgba(55,138,221,0.07);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+  }
+
+  .pagination { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
+  .page-btn {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .page-btn.active { background: rgba(55,138,221,0.2); border-color: var(--accent2); color: var(--accent); }
+  .page-btn:hover:not(.active) { border-color: var(--border-bright); color: var(--text-secondary); }
+
+  /* REALTIME INDICATOR */
+  .realtime-tag {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    background: rgba(29,158,117,0.1);
+    border: 1px solid rgba(29,158,117,0.25);
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--success);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .rt-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--success); animation: pulse-dot 1.5s infinite; }
+
+  /* ESP32 STATUS */
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .node-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex; align-items: center; gap: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .node-card.online { border-color: rgba(29,158,117,0.25); }
+  .node-card.offline { border-color: rgba(226,75,74,0.25); }
+  .node-card.warn { border-color: rgba(239,159,39,0.25); }
+
+  .node-dot {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .node-dot.online { background: rgba(29,158,117,0.15); }
+  .node-dot.offline { background: rgba(226,75,74,0.15); }
+  .node-dot.warn { background: rgba(239,159,39,0.15); }
+
+  .node-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .node-status { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .node-ping {
+    margin-left: auto;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* ANIMATION */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .content { animation: fadeIn 0.3s ease; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<div id="login-screen">
+  <div class="login-bg-grid"></div>
+  <div class="login-glow"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">💧</div>
+      <div class="logo-text">
+        <div class="brand">Aguas Nuevo Sur</div>
+        <div class="sub">Sistema de Monitoreo IoT</div>
+      </div>
+    </div>
+    <h2 class="login-title">Iniciar sesión</h2>
+    <p class="login-subtitle">Acceso al panel de control eléctrico</p>
+    <div class="form-group">
+      <label>Usuario</label>
+      <input type="text" id="login-user" placeholder="usuario@aguasnuevosur.cl" value="admin@aguasnuevosur.cl">
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••" value="admin123">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Ingresar al sistema</button>
+    <p class="login-hint">¿Problemas de acceso? <span>Contactar soporte técnico</span></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════ APP ═══════════════════════ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo" title="Aguas Nuevo Sur">💧</div>
+    <div class="nav-item active" title="Dashboard">📊</div>
+    <div class="nav-item" title="Generador">⚡</div>
+    <div class="nav-item" title="Tensión & Corriente">🔌</div>
+    <div class="nav-item" title="Alarmas">
+      🔔
+      <span class="badge">3</span>
+    </div>
+    <div class="nav-item" title="Historial">📅</div>
+    <div class="nav-item" title="Nodos IoT">📡</div>
+    <div class="nav-item" title="Reportes Power BI">📈</div>
+    <div class="nav-item sidebar-bottom" title="Configuración">⚙️</div>
+    <div class="nav-item" title="Usuarios">👤</div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-title">Aguas <span>Nuevo Sur</span> — Panel de Control</div>
+    <div class="system-status"><div class="status-dot"></div> Sistema Operativo</div>
+    <div class="topbar-time" id="clock">--:--:--</div>
+    <div class="topbar-user">
+      <div class="user-avatar">AS</div>
+      <span>Andrés Sánches</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="content">
+
+      <div class="page-header">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <h1>Panel principal</h1>
+            <h2>Monitoreo Eléctrico en Tiempo Real</h2>
+          </div>
+          <div class="realtime-tag"><div class="rt-dot"></div> Tiempo real · AWS Lambda · DynamoDB</div>
+        </div>
+      </div>
+
+      <!-- NODOS ESP32 -->
+      <div class="nodes-grid">
+        <div class="node-card online">
+          <div class="node-dot online">📡</div>
+          <div>
+            <div class="node-name">ESP32 Master</div>
+            <div class="node-status">Online · Coordinador</div>
+          </div>
+          <div class="node-ping" style="color:var(--success)">12ms</div>
+        </div>
+        <div class="node-card online">
+          <div class="node-dot online">📡</div>
+          <div>
+            <div class="node-name">Slave Velocidad</div>
+            <div class="node-status">Online · RPM activo</div>
+          </div>
+          <div class="node-ping" style="color:var(--success)">18ms</div>
+        </div>
+        <div class="node-card warn">
+          <div class="node-dot warn">📡</div>
+          <div>
+            <div class="node-name">Slave Tensión</div>
+            <div class="node-status">Alerta · Variación ±3%</div>
+          </div>
+          <div class="node-ping" style="color:var(--warning)">45ms</div>
+        </div>
+        <div class="node-card online">
+          <div class="node-dot online">📡</div>
+          <div>
+            <div class="node-name">Slave Corriente</div>
+            <div class="node-status">Online · Midiendo</div>
+          </div>
+          <div class="node-ping" style="color:var(--success)">22ms</div>
+        </div>
+      </div>
+
+      <!-- KPI CARDS -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-header">
+            <span class="kpi-label">Tensión de Salida</span>
+            <span class="kpi-icon">⚡</span>
+          </div>
+          <div class="kpi-value" id="kpi-tension">220<span class="kpi-unit">V</span></div>
+          <div class="kpi-delta up" id="kpi-tension-delta">↑ +1.2V nominal</div>
+        </div>
+        <div class="kpi-card warn-card">
+          <div class="kpi-accent amber"></div>
+          <div class="kpi-header">
+            <span class="kpi-label">Corriente Total</span>
+            <span class="kpi-icon">🔌</span>
+          </div>
+          <div class="kpi-value" id="kpi-corriente">48<span class="kpi-unit">A</span></div>
+          <div class="kpi-delta" style="color:var(--warning)" id="kpi-corriente-delta">⚠ +8A sobre media</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent green"></div>
+          <div class="kpi-header">
+            <span class="kpi-label">Generación Eléctrica</span>
+            <span class="kpi-icon">🔋</span>
+          </div>
+          <div class="kpi-value" id="kpi-gen">145<span class="kpi-unit">kWh</span></div>
+          <div class="kpi-delta up" id="kpi-gen-delta">↑ +12% vs ayer</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent green"></div>
+          <div class="kpi-header">
+            <span class="kpi-label">Eficiencia Térmica</span>
+            <span class="kpi-icon">🌡️</span>
+          </div>
+          <div class="kpi-value" id="kpi-ef">75<span class="kpi-unit">%</span></div>
+          <div class="kpi-delta neutral" id="kpi-ef-delta">→ Sin cambios · 24h</div>
+        </div>
+      </div>
+
+      <!-- MAIN CHARTS ROW -->
+      <div class="charts-row">
+
+        <!-- TENSION & CORRIENTE TIMELINE -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Tensión & Corriente — Tiempo Real</div>
+              <div class="chart-subtitle">Datos ESP32 Slave Tensión · Slave Corriente via DynamoDB</div>
+            </div>
+            <div class="chart-controls">
+              <button class="ctrl-btn active" onclick="setRange(this,'1h')">1H</button>
+              <button class="ctrl-btn" onclick="setRange(this,'6h')">6H</button>
+              <button class="ctrl-btn" onclick="setRange(this,'24h')">24H</button>
+              <button class="ctrl-btn" onclick="setRange(this,'7d')">7D</button>
+            </div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-item"><div class="legend-dot" style="background:#378ADD"></div> Tensión (V)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#EF9F27"></div> Corriente (A)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(226,75,74,0.5);border:1px dashed #E24B4A"></div> Límite crítico</div>
+          </div>
+          <div style="position:relative;height:260px;">
+            <canvas id="chartTensionCorriente" role="img" aria-label="Gráfico de tensión y corriente en tiempo real. Línea azul para voltaje, línea naranja para corriente.">Tensión: 220V promedio. Corriente: 48A promedio con pico a 56A.</canvas>
+          </div>
+        </div>
+
+        <!-- MINI GAUGES + RPM -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Estado del Generador</div>
+              <div class="chart-subtitle">Parámetros actuales · ESP32 Slave Velocidad</div>
+            </div>
+            <div class="realtime-tag" style="font-size:9px"><div class="rt-dot"></div> LIVE</div>
+          </div>
+          <div class="gauges-grid" style="margin-bottom:16px;">
+            <div class="gauge-wrap">
+              <div class="gauge-label">Tensión entrada</div>
+              <div class="gauge-value" id="g-v-in">218<span class="gauge-unit">V</span></div>
+              <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="g-v-in-bar" style="width:72%;background:var(--accent2)"></div></div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-label">Tensión salida</div>
+              <div class="gauge-value" id="g-v-out">220<span class="gauge-unit">V</span></div>
+              <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="g-v-out-bar" style="width:73%;background:var(--accent2)"></div></div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-label">Corriente</div>
+              <div class="gauge-value" id="g-i">48<span class="gauge-unit">A</span></div>
+              <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="g-i-bar" style="width:62%;background:var(--warning)"></div></div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-label">Velocidad</div>
+              <div class="gauge-value" id="g-rpm">1480<span class="gauge-unit">rpm</span></div>
+              <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="g-rpm-bar" style="width:74%;background:var(--success)"></div></div>
+            </div>
+          </div>
+          <div style="position:relative;height:110px;">
+            <canvas id="chartRpm" role="img" aria-label="Gráfico de barras de RPM en tiempo real.">RPM promedio 1480, variando entre 1400 y 1520.</canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHARTS ROW 2 -->
+      <div class="charts-row2">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Generación Eléctrica — Mensual</div>
+              <div class="chart-subtitle">kWh producidos · PostgreSQL / Power BI</div>
+            </div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-item"><div class="legend-dot" style="background:#185FA5"></div> kWh generados</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(29,158,117,0.6)"></div> Objetivo</div>
+          </div>
+          <div style="position:relative;height:200px;">
+            <canvas id="chartGen" role="img" aria-label="Gráfico de barras de generación eléctrica mensual en kWh.">Generación mensual: Ene 3200, Feb 3800, Mar 3500, Abr 4100, May 3900 kWh.</canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Distribución de Potencia</div>
+              <div class="chart-subtitle">Red eléctrica vs Baterías</div>
+            </div>
+          </div>
+          <div style="position:relative;height:160px;">
+            <canvas id="chartDist" role="img" aria-label="Gráfico de dona mostrando distribución de potencia entre red eléctrica y baterías.">Red eléctrica 72%, baterías 28%.</canvas>
+          </div>
+          <div class="legend-row" style="justify-content:center;margin-top:12px;">
+            <div class="legend-item"><div class="legend-dot" style="background:#378ADD"></div> Red eléctrica 72%</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div> Baterías 28%</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+            <div style="background:var(--bg-card2);border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Red</div>
+              <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--accent)">104<span style="font-size:12px;font-weight:400;color:var(--text-secondary);margin-left:2px">kW</span></div>
+            </div>
+            <div style="background:var(--bg-card2);border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Baterías</div>
+              <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--success)">41<span style="font-size:12px;font-weight:400;color:var(--text-secondary);margin-left:2px">kW</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERTS TABLE -->
+      <div class="alerts-card">
+        <div class="section-header">
+          <h3>Alertas Recientes IoT</h3>
+          <div class="filter-row">
+            <select class="filter-select">
+              <option>Todos los niveles</option>
+              <option>Crítico</option>
+              <option>Alto</option>
+              <option>Medio</option>
+              <option>Bajo</option>
+            </select>
+            <select class="filter-select">
+              <option>Todos los nodos</option>
+              <option>ESP32 Master</option>
+              <option>Slave Tensión</option>
+              <option>Slave Corriente</option>
+              <option>Slave Velocidad</option>
+            </select>
+          </div>
+        </div>
+        <div class="section-tabs">
+          <div class="section-tab active">Activas (4)</div>
+          <div class="section-tab">Resueltas (23)</div>
+          <div class="section-tab">Todas</div>
+        </div>
+        <table class="alert-table">
+          <thead>
+            <tr>
+              <th>ID Alerta</th>
+              <th>Fecha / Hora</th>
+              <th>Nodo / Sensor</th>
+              <th>Evento</th>
+              <th>Parámetro</th>
+              <th>Nivel de Riesgo</th>
+              <th>Acción Sugerida</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="alert-id">AL-001</span></td>
+              <td>19 May, 2026 · 10:10 AM</td>
+              <td>Slave Tensión (T101)</td>
+              <td>Tensión fuera de rango nominal</td>
+              <td>234V (límite: 230V)</td>
+              <td><span class="risk-badge risk-critico">Crítico</span></td>
+              <td><span class="action-link">Revisar regulador → reiniciar</span></td>
+            </tr>
+            <tr>
+              <td><span class="alert-id">AL-002</span></td>
+              <td>18 May, 2026 · 03:12 PM</td>
+              <td>Nodo IoT 04</td>
+              <td>Pérdida de conexión &gt;30s</td>
+              <td>Timeout MQTT</td>
+              <td><span class="risk-badge risk-medio">Medio</span></td>
+              <td><span class="action-link">Reiniciar gateway de red</span></td>
+            </tr>
+            <tr>
+              <td><span class="alert-id">AL-003</span></td>
+              <td>18 May, 2026 · 02:15 PM</td>
+              <td>Slave Corriente (I202)</td>
+              <td>Sobrecorriente detectada</td>
+              <td>56A (límite: 50A)</td>
+              <td><span class="risk-badge risk-alto">Alto</span></td>
+              <td><span class="action-link">Mantenimiento preventivo urgente</span></td>
+            </tr>
+            <tr>
+              <td><span class="alert-id">AL-004</span></td>
+              <td>17 May, 2026 · 01:15 PM</td>
+              <td>Slave Velocidad (RPM)</td>
+              <td>RPM fuera de rango</td>
+              <td>1620 RPM (límite: 1600)</td>
+              <td><span class="risk-badge risk-bajo">Bajo</span></td>
+              <td><span class="action-link">Monitorear · siguiente ciclo</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <button class="page-btn">‹</button>
+          <button class="page-btn">1</button>
+          <button class="page-btn active">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn">5</button>
+          <button class="page-btn">...</button>
+          <button class="page-btn">20</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div style="text-align:center;padding:16px 0;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);">
+        Aguas Nuevo Sur © 2026 &nbsp;·&nbsp; Stack: AWS EC2 · Lambda · DynamoDB · PostgreSQL · Power BI &nbsp;·&nbsp; Nodos ESP32 vía MQTT
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// ─── AUTH ────────────────────────────────────────
+function doLogin() {
+  const u = document.getElementById('login-user').value;
+  const p = document.getElementById('login-pass').value;
+  if (!u || !p) { alert('Ingrese usuario y contraseña.'); return; }
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initCharts();
+  startRealtime();
+  startClock();
+}
+
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  stopRealtime();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
+});
+
+// ─── CLOCK ──────────────────────────────────────
+function startClock() {
+  const el = document.getElementById('clock');
+  function tick() {
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString('es-CL');
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ─── CHART RANGE TOGGLE ─────────────────────────
+function setRange(btn, range) {
+  document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (window.tcChart) {
+    const labels = generateLabels(range);
+    window.tcChart.data.labels = labels;
+    window.tcChart.data.datasets[0].data = labels.map(() => Math.round(215 + Math.random() * 12));
+    window.tcChart.data.datasets[1].data = labels.map(() => Math.round(38 + Math.random() * 22));
+    window.tcChart.update('active');
+  }
+}
+
+function generateLabels(range) {
+  const counts = { '1h': 12, '6h': 18, '24h': 24, '7d': 14 };
+  const count = counts[range] || 12;
+  const labels = [];
+  const now = new Date();
+  for (let i = count - 1; i >= 0; i--) {
+    const d = new Date(now - i * (range === '7d' ? 86400000 : range === '24h' ? 3600000 : range === '6h' ? 1200000 : 300000));
+    if (range === '7d') {
+      labels.push(d.toLocaleDateString('es-CL', { month:'short', day:'numeric' }));
+    } else {
+      labels.push(d.toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit' }));
+    }
+  }
+  return labels;
+}
+
+// ─── CHARTS ─────────────────────────────────────
+function initCharts() {
+  Chart.defaults.color = '#7FAFD4';
+  Chart.defaults.borderColor = 'rgba(55,138,221,0.1)';
+  Chart.defaults.font.family = 'Inter';
+
+  // 1. Tensión & Corriente
+  const tcLabels = generateLabels('1h');
+  const tcCtx = document.getElementById('chartTensionCorriente').getContext('2d');
+  window.tcChart = new Chart(tcCtx, {
+    type: 'line',
+    data: {
+      labels: tcLabels,
+      datasets: [
+        {
+          label: 'Tensión (V)',
+          data: tcLabels.map(() => Math.round(215 + Math.random() * 12)),
+          borderColor: '#378ADD',
+          backgroundColor: 'rgba(55,138,221,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#378ADD',
+          tension: 0.4,
+          fill: true,
+          yAxisID: 'yV'
+        },
+        {
+          label: 'Corriente (A)',
+          data: tcLabels.map(() => Math.round(38 + Math.random() * 22)),
+          borderColor: '#EF9F27',
+          backgroundColor: 'rgba(239,159,39,0.06)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#EF9F27',
+          borderDash: [4, 2],
+          tension: 0.4,
+          fill: false,
+          yAxisID: 'yI'
+        },
+        {
+          label: 'Límite crítico (A)',
+          data: tcLabels.map(() => 50),
+          borderColor: 'rgba(226,75,74,0.5)',
+          borderWidth: 1.5,
+          borderDash: [6, 3],
+          pointRadius: 0,
+          fill: false,
+          yAxisID: 'yI'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(55,138,221,0.07)' }, ticks: { maxTicksLimit: 8, font: { size: 11 } } },
+        yV: {
+          type: 'linear', position: 'left',
+          min: 200, max: 240,
+          grid: { color: 'rgba(55,138,221,0.07)' },
+          ticks: { callback: v => v + 'V', font: { size: 11 } },
+          title: { display: true, text: 'Tensión (V)', color: '#378ADD', font: { size: 11 } }
+        },
+        yI: {
+          type: 'linear', position: 'right',
+          min: 20, max: 70,
+          grid: { drawOnChartArea: false },
+          ticks: { callback: v => v + 'A', font: { size: 11 } },
+          title: { display: true, text: 'Corriente (A)', color: '#EF9F27', font: { size: 11 } }
+        }
+      }
+    }
+  });
+
+  // 2. RPM mini
+  const rpmCtx = document.getElementById('chartRpm').getContext('2d');
+  const rpmData = Array.from({ length: 14 }, () => Math.round(1400 + Math.random() * 200));
+  window.rpmChart = new Chart(rpmCtx, {
+    type: 'bar',
+    data: {
+      labels: rpmData.map((_, i) => ''),
+      datasets: [{
+        label: 'RPM',
+        data: rpmData,
+        backgroundColor: rpmData.map(v => v > 1550 ? 'rgba(226,75,74,0.7)' : v > 1500 ? 'rgba(239,159,39,0.7)' : 'rgba(29,158,117,0.7)'),
+        borderRadius: 3,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw + ' RPM' } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { display: false } },
+        y: { min: 1300, max: 1650, grid: { color: 'rgba(55,138,221,0.07)' }, ticks: { font: { size: 10 }, callback: v => v + '' } }
+      }
+    }
+  });
+
+  // 3. Generación mensual
+  const genCtx = document.getElementById('chartGen').getContext('2d');
+  window.genChart = new Chart(genCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      datasets: [
+        {
+          label: 'kWh generados',
+          data: [3200, 3800, 3500, 4100, 3900, 0, 0, 0, 0, 0, 0, 0],
+          backgroundColor: 'rgba(24,95,165,0.75)',
+          borderRadius: 5,
+          borderSkipped: false
+        },
+        {
+          label: 'Objetivo',
+          data: [3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500],
+          type: 'line',
+          borderColor: 'rgba(29,158,117,0.7)',
+          borderWidth: 2,
+          borderDash: [5, 3],
+          pointRadius: 0,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: { grid: { color: 'rgba(55,138,221,0.07)' }, ticks: { callback: v => (v/1000).toFixed(1) + 'k', font: { size: 11 } } }
+      }
+    }
+  });
+
+  // 4. Distribución potencia (donut)
+  const distCtx = document.getElementById('chartDist').getContext('2d');
+  window.distChart = new Chart(distCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Red eléctrica', 'Baterías'],
+      datasets: [{
+        data: [72, 28],
+        backgroundColor: ['#185FA5', '#1D9E75'],
+        borderColor: '#0D1B2A',
+        borderWidth: 3,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.raw + '%' } } }
+    }
+  });
+}
+
+// ─── REALTIME SIMULATION ─────────────────────────
+let rtInterval = null;
+
+function startRealtime() {
+  rtInterval = setInterval(() => {
+    const t = 218 + Math.round(Math.random() * 8);
+    const i = 42 + Math.round(Math.random() * 16);
+    const rpm = 1420 + Math.round(Math.random() * 200);
+    const ef = 72 + Math.round(Math.random() * 6);
+
+    // KPIs
+    document.getElementById('kpi-tension').innerHTML = t + '<span class="kpi-unit">V</span>';
+    document.getElementById('kpi-corriente').innerHTML = i + '<span class="kpi-unit">A</span>';
+    document.getElementById('kpi-ef').innerHTML = ef + '<span class="kpi-unit">%</span>';
+
+    // Gauges
+    document.getElementById('g-v-in').innerHTML = (t-2) + '<span class="gauge-unit">V</span>';
+    document.getElementById('g-v-out').innerHTML = t + '<span class="gauge-unit">V</span>';
+    document.getElementById('g-i').innerHTML = i + '<span class="gauge-unit">A</span>';
+    document.getElementById('g-rpm').innerHTML = rpm + '<span class="gauge-unit">rpm</span>';
+
+    document.getElementById('g-v-in-bar').style.width = Math.round((t/240)*100) + '%';
+    document.getElementById('g-v-out-bar').style.width = Math.round((t/240)*100) + '%';
+    document.getElementById('g-i-bar').style.width = Math.round((i/80)*100) + '%';
+    document.getElementById('g-rpm-bar').style.width = Math.round((rpm/2000)*100) + '%';
+
+    // Corriente bar color
+    document.getElementById('g-i-bar').style.background = i > 50 ? 'var(--danger)' : i > 45 ? 'var(--warning)' : 'var(--success)';
+
+    // Chart update
+    if (window.tcChart) {
+      const now = new Date();
+      const label = now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+      window.tcChart.data.labels.push(label);
+      window.tcChart.data.datasets[0].data.push(t);
+      window.tcChart.data.datasets[1].data.push(i);
+      window.tcChart.data.datasets[2].data.push(50);
+      if (window.tcChart.data.labels.length > 20) {
+        window.tcChart.data.labels.shift();
+        window.tcChart.data.datasets.forEach(d => d.data.shift());
+      }
+      window.tcChart.update('active');
+    }
+
+    // RPM chart update
+    if (window.rpmChart) {
+      window.rpmChart.data.datasets[0].data.push(rpm);
+      window.rpmChart.data.datasets[0].data.shift();
+      window.rpmChart.data.datasets[0].backgroundColor = window.rpmChart.data.datasets[0].data.map(v =>
+        v > 1550 ? 'rgba(226,75,74,0.7)' : v > 1500 ? 'rgba(239,159,39,0.7)' : 'rgba(29,158,117,0.7)'
+      );
+      window.rpmChart.update('active');
+    }
+
+  }, 2500);
+}
+
+function stopRealtime() {
+  if (rtInterval) clearInterval(rtInterval);
+}
+</script>
+</body>
+</html>
