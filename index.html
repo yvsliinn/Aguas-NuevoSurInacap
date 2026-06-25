@@ -8,946 +8,643 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  :root {
-    --blue-900: #042C53;
-    --blue-800: #0C447C;
-    --blue-600: #185FA5;
-    --blue-400: #378ADD;
-    --blue-200: #85B7EB;
-    --blue-100: #B5D4F4;
-    --blue-50: #E6F1FB;
-    --teal-600: #0F6E56;
-    --teal-400: #1D9E75;
-    --teal-200: #5DCAA5;
-    --amber-400: #BA7517;
-    --amber-200: #EF9F27;
-    --amber-50: #FAEEDA;
-    --red-600: #A32D2D;
-    --red-400: #E24B4A;
-    --red-50: #FCEBEB;
-    --green-400: #639922;
-    --green-50: #EAF3DE;
-    --gray-900: #2C2C2A;
-    --gray-800: #444441;
-    --gray-600: #5F5E5A;
-    --gray-200: #B4B2A9;
-    --gray-100: #D3D1C7;
-    --gray-50: #F1EFE8;
-    --bg: #060E1A;
-    --bg-card: #0D1B2A;
-    --bg-card2: #0F2236;
-    --border: rgba(55, 138, 221, 0.18);
-    --border-bright: rgba(55, 138, 221, 0.35);
-    --text-primary: #E8F4FF;
-    --text-secondary: #7FAFD4;
-    --text-muted: #4A7499;
-    --accent: #00C9FF;
-    --accent2: #378ADD;
-    --success: #1D9E75;
-    --warning: #EF9F27;
-    --danger: #E24B4A;
-    --critical: #FF3B3B;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── LOGIN ─────────────────────────────── */
-  #login-screen {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .login-bg-grid {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(55,138,221,0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(55,138,221,0.07) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-  }
-
-  .login-glow {
-    position: absolute;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(0,201,255,0.08) 0%, transparent 70%);
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-
-  .login-card {
-    position: relative;
-    background: var(--bg-card);
-    border: 1px solid var(--border-bright);
-    border-radius: 20px;
-    padding: 48px 52px;
-    width: 440px;
-    max-width: 95vw;
-  }
-
-  .login-logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 36px;
-  }
-
-  .logo-icon {
-    width: 52px; height: 52px;
-    background: linear-gradient(135deg, var(--accent2), var(--accent));
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    flex-shrink: 0;
-  }
-
-  .logo-text { line-height: 1.2; }
-  .logo-text .brand { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; }
-  .logo-text .sub { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; }
-
-  .login-title { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
-  .login-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 32px; }
-
-  .form-group { margin-bottom: 18px; }
-  .form-group label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
-
-  .form-group input {
-    width: 100%;
-    background: rgba(55,138,221,0.07);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 14px;
-    color: var(--text-primary);
-    font-family: 'Inter', sans-serif;
-    transition: border-color 0.2s;
-    outline: none;
-  }
-
-  .form-group input:focus { border-color: var(--accent2); background: rgba(55,138,221,0.1); }
-  .form-group input::placeholder { color: var(--text-muted); }
-
-  .login-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--blue-600), var(--accent2));
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    margin-top: 8px;
-    font-family: 'Inter', sans-serif;
-    letter-spacing: 0.3px;
-  }
-
-  .login-btn:hover { opacity: 0.9; }
-  .login-btn:active { transform: scale(0.99); }
-
-  .login-hint { margin-top: 16px; text-align: center; font-size: 12px; color: var(--text-muted); }
-  .login-hint span { color: var(--accent); cursor: pointer; }
-
-  /* ─── MAIN APP ───────────────────────────── */
-  #app { display: none; min-height: 100vh; }
-
-  /* SIDEBAR */
-  .sidebar {
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    width: 68px;
-    background: var(--bg-card);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-    z-index: 100;
-    gap: 6px;
-  }
-
-  .sidebar-logo {
-    width: 42px; height: 42px;
-    background: linear-gradient(135deg, var(--accent2), var(--accent));
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    margin-bottom: 20px;
-    cursor: pointer;
-  }
-
-  .nav-item {
-    width: 44px; height: 44px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 20px;
-    color: var(--text-muted);
-    transition: all 0.2s;
-    position: relative;
-  }
-
-  .nav-item:hover { background: rgba(55,138,221,0.12); color: var(--text-secondary); }
-  .nav-item.active { background: rgba(55,138,221,0.2); color: var(--accent); }
-
-  .nav-item .badge {
-    position: absolute;
-    top: 4px; right: 4px;
-    width: 16px; height: 16px;
-    background: var(--danger);
-    border-radius: 50%;
-    font-size: 9px;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 700;
-    border: 2px solid var(--bg-card);
-  }
-
-  .sidebar-bottom { margin-top: auto; }
-
-  /* TOPBAR */
-  .topbar {
-    position: fixed;
-    top: 0; left: 68px; right: 0;
-    height: 60px;
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    z-index: 99;
-    gap: 16px;
-  }
-
-  .topbar-title { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 0.5px; flex: 1; }
-  .topbar-title span { color: var(--accent); }
-
-  .system-status {
-    display: flex; align-items: center; gap: 8px;
-    padding: 6px 14px;
-    background: rgba(29,158,117,0.12);
-    border: 1px solid rgba(29,158,117,0.3);
-    border-radius: 20px;
-    font-size: 12px;
-    color: var(--success);
-    font-weight: 500;
-  }
-
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--success);
-    animation: pulse-dot 2s infinite;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(29,158,117,0.4); }
-    50% { box-shadow: 0 0 0 4px rgba(29,158,117,0); }
-  }
-
-  .topbar-time { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--text-secondary); font-weight: 500; }
-
-  .topbar-user {
-    display: flex; align-items: center; gap: 10px;
-    padding: 6px 14px;
-    background: rgba(55,138,221,0.08);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-
-  .user-avatar {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent2), var(--accent));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; color: white;
-  }
-
-  .logout-btn {
-    padding: 6px 14px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--text-muted);
-    font-size: 12px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.2s;
-  }
-
-  .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
-
-  /* MAIN */
-  .main {
-    margin-left: 68px;
-    padding-top: 60px;
-    min-height: 100vh;
-  }
-
-  .content { padding: 24px; }
-
-  .page-header { margin-bottom: 24px; }
-  .page-header h1 { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
-  .page-header h2 { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; }
-
-  /* KPI CARDS */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .kpi-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .kpi-card:hover { border-color: var(--border-bright); }
-
-  .kpi-card.alert-card { border-color: rgba(226,75,74,0.3); background: rgba(226,75,74,0.04); }
-  .kpi-card.warn-card { border-color: rgba(239,159,39,0.3); background: rgba(239,159,39,0.04); }
-
-  .kpi-accent {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
-  }
-
-  .kpi-accent.green { background: linear-gradient(90deg, var(--success), #5DCAA5); }
-  .kpi-accent.amber { background: linear-gradient(90deg, var(--warning), #FAC775); }
-  .kpi-accent.red { background: linear-gradient(90deg, var(--danger), #FF6B6B); }
-
-  .kpi-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .kpi-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-  .kpi-icon { font-size: 18px; color: var(--text-muted); }
-
-  .kpi-value { font-family: 'Rajdhani', sans-serif; font-size: 38px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-  .kpi-unit { font-size: 14px; font-weight: 400; color: var(--text-secondary); margin-left: 3px; }
-
-  .kpi-delta {
-    font-size: 12px;
-    display: flex; align-items: center; gap: 4px;
-  }
-
-  .kpi-delta.up { color: var(--success); }
-  .kpi-delta.down { color: var(--danger); }
-  .kpi-delta.neutral { color: var(--text-muted); }
-
-  /* CHARTS ROW */
-  .charts-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .chart-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-  }
-
-  .chart-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  .chart-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-  .chart-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-  .chart-controls { display: flex; gap: 6px; }
-
-  .ctrl-btn {
-    padding: 4px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-muted);
-    font-size: 11px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.2s;
-  }
-
-  .ctrl-btn.active { background: rgba(55,138,221,0.15); border-color: var(--accent2); color: var(--accent); }
-  .ctrl-btn:hover:not(.active) { border-color: var(--border-bright); color: var(--text-secondary); }
-
-  .legend-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
-  /* GAUGE */
-  .gauges-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-  .gauge-wrap {
-    background: var(--bg-card2);
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-  }
-
-  .gauge-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
-  .gauge-value { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; }
-  .gauge-unit { font-size: 12px; color: var(--text-secondary); font-weight: 400; margin-left: 2px; }
-
-  .gauge-bar-bg { height: 6px; background: rgba(55,138,221,0.12); border-radius: 3px; margin-top: 10px; overflow: hidden; }
-  .gauge-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
-
-  /* CHARTS ROW 2 */
-  .charts-row2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  /* ALERTS TABLE */
-  .alerts-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
-  }
-
-  .alert-table { width: 100%; border-collapse: collapse; }
-
-  .alert-table th {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-muted);
-    text-align: left;
-    padding: 0 12px 10px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .alert-table td {
-    padding: 13px 12px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    border-bottom: 1px solid rgba(55,138,221,0.06);
-  }
-
-  .alert-table tr:last-child td { border-bottom: none; }
-  .alert-table tr:hover td { background: rgba(55,138,221,0.04); }
-
-  .alert-id { font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-primary); }
-
-  .risk-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .risk-critico { background: rgba(255,59,59,0.15); color: #FF6B6B; border: 1px solid rgba(255,59,59,0.3); }
-  .risk-alto { background: rgba(239,159,39,0.15); color: #FAC775; border: 1px solid rgba(239,159,39,0.3); }
-  .risk-medio { background: rgba(55,138,221,0.15); color: var(--accent); border: 1px solid rgba(55,138,221,0.3); }
-  .risk-bajo { background: rgba(29,158,117,0.15); color: #5DCAA5; border: 1px solid rgba(29,158,117,0.3); }
-
-  .action-link { color: var(--accent); font-size: 12px; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
-
-  .section-tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
-
-  .section-tab {
-    padding: 8px 18px;
-    font-size: 13px;
-    color: var(--text-muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    margin-bottom: -1px;
-  }
-
-  .section-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .section-header h3 { font-size: 14px; font-weight: 600; }
-
-  .filter-row { display: flex; gap: 8px; }
-
-  .filter-select {
-    padding: 6px 12px;
-    background: rgba(55,138,221,0.07);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-secondary);
-    font-size: 12px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-  }
-
-  .pagination { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
-  .page-btn {
-    width: 30px; height: 30px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-muted);
-    font-size: 12px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .page-btn.active { background: rgba(55,138,221,0.2); border-color: var(--accent2); color: var(--accent); }
-  .page-btn:hover:not(.active) { border-color: var(--border-bright); color: var(--text-secondary); }
-
-  /* REALTIME INDICATOR */
-  .realtime-tag {
-    display: flex; align-items: center; gap: 6px;
-    padding: 4px 10px;
-    background: rgba(29,158,117,0.1);
-    border: 1px solid rgba(29,158,117,0.25);
-    border-radius: 20px;
-    font-size: 10px;
-    color: var(--success);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-  }
-
-  .rt-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--success); animation: pulse-dot 1.5s infinite; }
-
-  /* ESP32 STATUS */
-  .nodes-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
-  .node-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex; align-items: center; gap: 12px;
-    transition: border-color 0.2s;
-  }
-
-  .node-card.online { border-color: rgba(29,158,117,0.25); }
-  .node-card.offline { border-color: rgba(226,75,74,0.25); }
-  .node-card.warn { border-color: rgba(239,159,39,0.25); }
-
-  .node-dot {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .node-dot.online { background: rgba(29,158,117,0.15); }
-  .node-dot.offline { background: rgba(226,75,74,0.15); }
-  .node-dot.warn { background: rgba(239,159,39,0.15); }
-
-  .node-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-  .node-status { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-  .node-ping {
-    margin-left: auto;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  /* ANIMATION */
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .content { animation: fadeIn 0.3s ease; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+:root {
+  --bg:#060E1A; --bg-card:#0D1B2A; --bg-card2:#0F2236;
+  --border:rgba(55,138,221,0.18); --border-bright:rgba(55,138,221,0.35);
+  --text-primary:#E8F4FF; --text-secondary:#7FAFD4; --text-muted:#4A7499;
+  --accent:#00C9FF; --accent2:#378ADD; --blue6:#185FA5;
+  --success:#1D9E75; --warning:#EF9F27; --danger:#E24B4A;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;overflow-x:hidden;}
+
+/* ── LOGIN ── */
+#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;}
+.login-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(55,138,221,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(55,138,221,0.06) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;}
+.login-glow{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(0,201,255,0.07) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.login-card{position:relative;background:var(--bg-card);border:1px solid var(--border-bright);border-radius:20px;padding:48px 52px;width:440px;max-width:95vw;}
+.lcard-logo{display:flex;align-items:center;gap:16px;margin-bottom:36px;}
+.lcard-brand{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--text-primary);letter-spacing:0.3px;line-height:1.2;}
+.lcard-sub{font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.login-title{font-size:22px;font-weight:600;margin-bottom:6px;}
+.login-sub{font-size:13px;color:var(--text-secondary);margin-bottom:30px;}
+.fgroup{margin-bottom:16px;}
+.fgroup label{display:block;font-size:11px;color:var(--text-secondary);margin-bottom:6px;letter-spacing:0.8px;text-transform:uppercase;}
+.fgroup input{width:100%;background:rgba(55,138,221,0.07);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--text-primary);font-family:'Inter',sans-serif;transition:border-color .2s;outline:none;}
+.fgroup input:focus{border-color:var(--accent2);background:rgba(55,138,221,0.1);}
+.fgroup input::placeholder{color:var(--text-muted);}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--blue6),var(--accent2));border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s;margin-top:8px;font-family:'Inter',sans-serif;}
+.login-btn:hover{opacity:.9;} .login-btn:active{transform:scale(.99);}
+.login-hint{margin-top:14px;text-align:center;font-size:12px;color:var(--text-muted);}
+.login-hint span{color:var(--accent);cursor:pointer;}
+
+/* ── APP ── */
+#app{display:none;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:64px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:16px 0;z-index:100;gap:4px;}
+.sb-logo{width:40px;height:40px;border-radius:10px;overflow:hidden;margin-bottom:18px;display:flex;align-items:center;justify-content:center;background:var(--bg-card2);border:1px solid var(--border-bright);cursor:pointer;flex-shrink:0;}
+.nav-item{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);transition:all .2s;position:relative;}
+.nav-item svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.nav-item:hover{background:rgba(55,138,221,0.12);color:var(--text-secondary);}
+.nav-item.active{background:rgba(55,138,221,0.2);color:var(--accent);}
+.nav-badge{position:absolute;top:4px;right:4px;width:15px;height:15px;background:var(--danger);border-radius:50%;font-size:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;border:2px solid var(--bg-card);}
+.nav-spacer{flex:1;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:64px;right:0;height:58px;background:var(--bg-card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:99;gap:14px;}
+.topbar-logo{display:flex;align-items:center;gap:12px;flex:1;}
+.topbar-brand{font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;letter-spacing:0.3px;}
+.topbar-brand span{color:var(--accent);}
+.topbar-divider{width:1px;height:22px;background:var(--border);}
+.sys-status{display:flex;align-items:center;gap:7px;padding:5px 12px;background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.25);border-radius:20px;font-size:11px;color:var(--success);font-weight:500;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pdot 2s infinite;}
+@keyframes pdot{0%,100%{box-shadow:0 0 0 0 rgba(29,158,117,.4);}50%{box-shadow:0 0 0 4px rgba(29,158,117,0);}}
+.tclock{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--text-secondary);font-weight:500;min-width:72px;text-align:right;}
+.tuser{display:flex;align-items:center;gap:9px;padding:5px 13px;background:rgba(55,138,221,0.07);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text-secondary);cursor:pointer;}
+.uavatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue6),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
+.tbtn{padding:5px 13px;background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.tbtn:hover{border-color:var(--danger);color:var(--danger);}
+
+/* NAV TABS */
+.nav-tabs{display:flex;gap:4px;padding:0 24px;background:var(--bg-card);border-bottom:1px solid var(--border);position:fixed;top:58px;left:64px;right:0;z-index:98;}
+.ntab{padding:10px 18px;font-size:13px;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.ntab svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.ntab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.ntab:hover:not(.active){color:var(--text-secondary);}
+
+/* MAIN */
+.main{margin-left:64px;padding-top:102px;min-height:100vh;}
+.content{padding:24px;}
+.page{display:none;} .page.active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── HOME PAGE ── */
+.home-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.home-header h1{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;}
+.rttag{display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.2);border-radius:20px;font-size:10px;color:var(--success);font-weight:600;text-transform:uppercase;letter-spacing:.8px;}
+.rtdot{width:5px;height:5px;border-radius:50%;background:var(--success);animation:pdot 1.5s infinite;}
+
+/* BIG METRIC CARDS */
+.big-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
+
+.bcard{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:0;overflow:hidden;position:relative;transition:border-color .2s;}
+.bcard:hover{border-color:var(--border-bright);}
+.bcard-top{padding:22px 24px 18px;display:flex;align-items:flex-start;justify-content:space-between;}
+.bcard-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bcard-icon svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.bcard-icon.blue{background:rgba(55,138,221,0.15);color:var(--accent);}
+.bcard-icon.green{background:rgba(29,158,117,0.15);color:var(--success);}
+.bcard-icon.amber{background:rgba(239,159,39,0.15);color:var(--warning);}
+.bcard-icon.purple{background:rgba(130,80,200,0.15);color:#b48ef0;}
+.bcard-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
+.bcard-value{font-family:'Rajdhani',sans-serif;font-size:52px;font-weight:700;line-height:1;color:var(--text-primary);}
+.bcard-unit{font-size:18px;font-weight:400;color:var(--text-secondary);margin-left:4px;}
+.bcard-delta{font-size:12px;margin-top:6px;display:flex;align-items:center;gap:5px;}
+.bcard-delta.up{color:var(--success);}
+.bcard-delta.warn{color:var(--warning);}
+.bcard-delta.neutral{color:var(--text-muted);}
+.bcard-accent{height:3px;background:linear-gradient(90deg,var(--accent2),var(--accent));}
+.bcard-accent.green{background:linear-gradient(90deg,var(--success),#5DCAA5);}
+.bcard-accent.amber{background:linear-gradient(90deg,var(--warning),#FAC775);}
+.bcard-accent.purple{background:linear-gradient(90deg,#8250C8,#b48ef0);}
+
+/* GENERATOR STATUS CARD */
+.gen-card{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:20px;}
+.gen-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.gen-card-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:9px;}
+.gen-card-title svg{width:18px;height:18px;fill:none;stroke:var(--accent2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.gen-status-badge{display:flex;align-items:center;gap:7px;padding:6px 14px;background:rgba(29,158,117,0.12);border:1px solid rgba(29,158,117,0.3);border-radius:20px;font-size:12px;color:var(--success);font-weight:600;}
+.nodes-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.ncard{background:var(--bg-card2);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:1px solid transparent;transition:border-color .2s;}
+.ncard.ok{border-color:rgba(29,158,117,0.2);}
+.ncard.warn{border-color:rgba(239,159,39,0.2);}
+.ncard.err{border-color:rgba(226,75,74,0.2);}
+.nicon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nicon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.nicon.ok{background:rgba(29,158,117,0.15);color:var(--success);}
+.nicon.warn{background:rgba(239,159,39,0.15);color:var(--warning);}
+.nicon.err{background:rgba(226,75,74,0.15);color:var(--danger);}
+.nname{font-size:13px;font-weight:500;color:var(--text-primary);}
+.nsub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.nping{margin-left:auto;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;}
+
+/* PARAM GAUGES */
+.gauges-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.gitem{background:var(--bg-card2);border-radius:12px;padding:16px;}
+.g-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.g-val{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;line-height:1;}
+.g-unit{font-size:13px;font-weight:400;color:var(--text-secondary);margin-left:3px;}
+.g-bar{height:5px;background:rgba(55,138,221,0.12);border-radius:3px;margin-top:10px;overflow:hidden;}
+.g-fill{height:100%;border-radius:3px;transition:width .7s ease;}
+
+/* MONTHLY CALENDAR CARD */
+.monthly-card{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:20px;}
+.monthly-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.monthly-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:9px;}
+.monthly-title svg{width:18px;height:18px;fill:none;stroke:var(--accent2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.monthly-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.mkpi{background:var(--bg-card2);border-radius:12px;padding:16px;}
+.mkpi-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.mkpi-val{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;}
+.mkpi-unit{font-size:11px;font-weight:400;color:var(--text-secondary);margin-left:2px;}
+.mkpi-note{font-size:11px;margin-top:4px;}
+
+/* ALERTS TABLE */
+.alerts-card{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:24px;}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sec-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:9px;}
+.sec-title svg{width:18px;height:18px;fill:none;stroke:var(--accent2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.filter-row{display:flex;gap:7px;}
+.fsel{padding:6px 12px;background:rgba(55,138,221,0.07);border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;outline:none;}
+.alert-table{width:100%;border-collapse:collapse;}
+.alert-table th{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);text-align:left;padding:0 12px 10px;border-bottom:1px solid var(--border);}
+.alert-table td{padding:13px 12px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid rgba(55,138,221,0.06);}
+.alert-table tr:last-child td{border-bottom:none;}
+.alert-table tr:hover td{background:rgba(55,138,221,0.03);}
+.aid{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;color:var(--text-primary);}
+.rbadge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.r-critico{background:rgba(255,59,59,0.12);color:#FF6B6B;border:1px solid rgba(255,59,59,0.25);}
+.r-alto{background:rgba(239,159,39,0.12);color:#FAC775;border:1px solid rgba(239,159,39,0.25);}
+.r-medio{background:rgba(55,138,221,0.12);color:var(--accent);border:1px solid rgba(55,138,221,0.25);}
+.r-bajo{background:rgba(29,158,117,0.12);color:#5DCAA5;border:1px solid rgba(29,158,117,0.25);}
+.alink{color:var(--accent);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+.pagination{display:flex;gap:5px;justify-content:center;margin-top:16px;}
+.pbtn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.pbtn.active{background:rgba(55,138,221,0.2);border-color:var(--accent2);color:var(--accent);}
+.pbtn:hover:not(.active){border-color:var(--border-bright);color:var(--text-secondary);}
+
+/* CHARTS PAGE */
+.charts-page-header{margin-bottom:20px;}
+.charts-page-header h2{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;}
+.charts-page-header p{font-size:13px;color:var(--text-muted);}
+.chart-fullcard{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;}
+.cfh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.cft{font-size:14px;font-weight:600;}
+.cfs{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.ctrls{display:flex;gap:5px;}
+.ctrl-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.ctrl-btn.active{background:rgba(55,138,221,0.15);border-color:var(--accent2);color:var(--accent);}
+.ctrl-btn:hover:not(.active){border-color:var(--border-bright);color:var(--text-secondary);}
+.leg-row{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px;}
+.leg-i{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);}
+.leg-sq{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.charts-two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+
+/* FOOTER */
+.dash-footer{text-align:center;padding:16px 0;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<!-- ══════════ LOGIN ══════════ -->
 <div id="login-screen">
-  <div class="login-bg-grid"></div>
+  <div class="login-grid"></div>
   <div class="login-glow"></div>
   <div class="login-card">
-    <div class="login-logo">
-      <div class="logo-icon">💧</div>
-      <div class="logo-text">
-        <div class="brand">Aguas Nuevo Sur</div>
-        <div class="sub">Sistema de Monitoreo IoT</div>
+    <div class="lcard-logo">
+      <!-- Logo SVG profesional -->
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="52" height="52" rx="14" fill="#0D1B2A" stroke="rgba(55,138,221,0.5)" stroke-width="1"/>
+        <path d="M26 10 C26 10 14 22 14 30 C14 37.2 19.4 43 26 43 C32.6 43 38 37.2 38 30 C38 22 26 10 26 10Z" fill="#185FA5" opacity="0.9"/>
+        <path d="M26 16 C26 16 18 25 18 31 C18 35.4 21.6 39 26 39 C30.4 39 34 35.4 34 31 C34 25 26 16 26 16Z" fill="#378ADD" opacity="0.85"/>
+        <path d="M26 22 C26 22 21 28.5 21 32 C21 34.8 23.2 37 26 37 C28.8 37 31 34.8 31 32 C31 28.5 26 22 26 22Z" fill="#00C9FF" opacity="0.9"/>
+        <!-- rayo eléctrico -->
+        <path d="M29 23 L23 31 H27 L23 41 L33 29 H28.5 Z" fill="white" opacity="0.95"/>
+      </svg>
+      <div>
+        <div class="lcard-brand">Aguas Nuevo Sur</div>
+        <div class="lcard-sub">Sistema de Monitoreo IoT</div>
       </div>
     </div>
     <h2 class="login-title">Iniciar sesión</h2>
-    <p class="login-subtitle">Acceso al panel de control eléctrico</p>
-    <div class="form-group">
+    <p class="login-sub">Acceso al panel de control eléctrico</p>
+    <div class="fgroup">
       <label>Usuario</label>
-      <input type="text" id="login-user" placeholder="usuario@aguasnuevosur.cl" value="admin@aguasnuevosur.cl">
+      <input type="text" id="lu" placeholder="usuario@aguasnuevosur.cl" value="admin@aguasnuevosur.cl">
     </div>
-    <div class="form-group">
+    <div class="fgroup">
       <label>Contraseña</label>
-      <input type="password" id="login-pass" placeholder="••••••••" value="admin123">
+      <input type="password" id="lp" placeholder="••••••••" value="admin123">
     </div>
     <button class="login-btn" onclick="doLogin()">Ingresar al sistema</button>
     <p class="login-hint">¿Problemas de acceso? <span>Contactar soporte técnico</span></p>
   </div>
 </div>
 
-<!-- ═══════════════════════ APP ═══════════════════════ -->
+<!-- ══════════ APP ══════════ -->
 <div id="app">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-logo" title="Aguas Nuevo Sur">💧</div>
-    <div class="nav-item active" title="Dashboard">📊</div>
-    <div class="nav-item" title="Generador">⚡</div>
-    <div class="nav-item" title="Tensión & Corriente">🔌</div>
-    <div class="nav-item" title="Alarmas">
-      🔔
-      <span class="badge">3</span>
+    <div class="sb-logo" title="Aguas Nuevo Sur" onclick="showPage('home')">
+      <svg width="28" height="28" viewBox="0 0 52 52" fill="none">
+        <path d="M26 8 C26 8 13 21 13 30 C13 37.7 19 44 26 44 C33 44 39 37.7 39 30 C39 21 26 8 26 8Z" fill="#185FA5"/>
+        <path d="M26 15 C26 15 17 26 17 31.5 C17 36.1 21.1 40 26 40 C30.9 40 35 36.1 35 31.5 C35 26 26 15 26 15Z" fill="#378ADD"/>
+        <path d="M29 20 L22 31 H26.5 L22 43 L34 28 H29 Z" fill="white" opacity="0.95"/>
+      </svg>
     </div>
-    <div class="nav-item" title="Historial">📅</div>
-    <div class="nav-item" title="Nodos IoT">📡</div>
-    <div class="nav-item" title="Reportes Power BI">📈</div>
-    <div class="nav-item sidebar-bottom" title="Configuración">⚙️</div>
-    <div class="nav-item" title="Usuarios">👤</div>
+    <!-- Dashboard -->
+    <div class="nav-item active" title="Inicio" onclick="showPage('home')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <!-- Gráficos -->
+    <div class="nav-item" title="Gráficos" onclick="showPage('graficos')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <!-- Alertas -->
+    <div class="nav-item" title="Alertas" onclick="showPage('alertas')">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="nav-badge">3</span>
+    </div>
+    <!-- Nodos IoT -->
+    <div class="nav-item" title="Nodos IoT">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>
+    </div>
+    <!-- Historial -->
+    <div class="nav-item" title="Historial">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <!-- Reportes -->
+    <div class="nav-item" title="Reportes Power BI">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </div>
+    <div class="nav-spacer"></div>
+    <!-- Config -->
+    <div class="nav-item" title="Configuración">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+    <!-- Users -->
+    <div class="nav-item" title="Usuarios">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
   </aside>
 
   <!-- TOPBAR -->
   <header class="topbar">
-    <div class="topbar-title">Aguas <span>Nuevo Sur</span> — Panel de Control</div>
-    <div class="system-status"><div class="status-dot"></div> Sistema Operativo</div>
-    <div class="topbar-time" id="clock">--:--:--</div>
-    <div class="topbar-user">
-      <div class="user-avatar">AS</div>
+    <div class="topbar-logo">
+      <svg width="32" height="32" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#0D1B2A" stroke="rgba(55,138,221,0.4)" stroke-width="1"/>
+        <path d="M26 8C26 8 13 21 13 30c0 7.7 6 14 13 14s13-6.3 13-14C39 21 26 8 26 8z" fill="#185FA5"/>
+        <path d="M26 15c0 0-9 11-9 16.5C17 36.1 21.1 40 26 40s9-3.9 9-8.5C35 26 26 15 26 15z" fill="#378ADD"/>
+        <path d="M29 20L22 31h4.5L22 43 34 28h-5z" fill="white" opacity=".95"/>
+      </svg>
+      <div class="topbar-brand">Aguas <span>Nuevo Sur</span></div>
+      <div class="topbar-divider"></div>
+      <div class="sys-status"><div class="sdot"></div> Sistema Operativo</div>
+    </div>
+    <div class="tclock" id="clock">--:--:--</div>
+    <div class="tuser">
+      <div class="uavatar">AS</div>
       <span>Andrés Sánches</span>
     </div>
-    <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
+    <button class="tbtn" onclick="doLogout()">Cerrar sesión</button>
   </header>
+
+  <!-- NAV TABS -->
+  <nav class="nav-tabs">
+    <div class="ntab active" onclick="showPage('home')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Panel Principal
+    </div>
+    <div class="ntab" onclick="showPage('graficos')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Gráficos
+    </div>
+    <div class="ntab" onclick="showPage('alertas')">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Alertas IoT
+    </div>
+  </nav>
 
   <!-- MAIN -->
   <main class="main">
     <div class="content">
 
-      <div class="page-header">
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <h1>Panel principal</h1>
-            <h2>Monitoreo Eléctrico en Tiempo Real</h2>
-          </div>
-          <div class="realtime-tag"><div class="rt-dot"></div> Tiempo real · AWS Lambda · DynamoDB</div>
-        </div>
-      </div>
+      <!-- ══ PAGE: HOME ══ -->
+      <div id="page-home" class="page active">
 
-      <!-- NODOS ESP32 -->
-      <div class="nodes-grid">
-        <div class="node-card online">
-          <div class="node-dot online">📡</div>
-          <div>
-            <div class="node-name">ESP32 Master</div>
-            <div class="node-status">Online · Coordinador</div>
-          </div>
-          <div class="node-ping" style="color:var(--success)">12ms</div>
+        <div class="home-header">
+          <h1>Panel de Control Eléctrico</h1>
+          <div class="rttag"><div class="rtdot"></div> Tiempo real · DynamoDB · Lambda</div>
         </div>
-        <div class="node-card online">
-          <div class="node-dot online">📡</div>
-          <div>
-            <div class="node-name">Slave Velocidad</div>
-            <div class="node-status">Online · RPM activo</div>
-          </div>
-          <div class="node-ping" style="color:var(--success)">18ms</div>
-        </div>
-        <div class="node-card warn">
-          <div class="node-dot warn">📡</div>
-          <div>
-            <div class="node-name">Slave Tensión</div>
-            <div class="node-status">Alerta · Variación ±3%</div>
-          </div>
-          <div class="node-ping" style="color:var(--warning)">45ms</div>
-        </div>
-        <div class="node-card online">
-          <div class="node-dot online">📡</div>
-          <div>
-            <div class="node-name">Slave Corriente</div>
-            <div class="node-status">Online · Midiendo</div>
-          </div>
-          <div class="node-ping" style="color:var(--success)">22ms</div>
-        </div>
-      </div>
 
-      <!-- KPI CARDS -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-accent"></div>
-          <div class="kpi-header">
-            <span class="kpi-label">Tensión de Salida</span>
-            <span class="kpi-icon">⚡</span>
-          </div>
-          <div class="kpi-value" id="kpi-tension">220<span class="kpi-unit">V</span></div>
-          <div class="kpi-delta up" id="kpi-tension-delta">↑ +1.2V nominal</div>
-        </div>
-        <div class="kpi-card warn-card">
-          <div class="kpi-accent amber"></div>
-          <div class="kpi-header">
-            <span class="kpi-label">Corriente Total</span>
-            <span class="kpi-icon">🔌</span>
-          </div>
-          <div class="kpi-value" id="kpi-corriente">48<span class="kpi-unit">A</span></div>
-          <div class="kpi-delta" style="color:var(--warning)" id="kpi-corriente-delta">⚠ +8A sobre media</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-accent green"></div>
-          <div class="kpi-header">
-            <span class="kpi-label">Generación Eléctrica</span>
-            <span class="kpi-icon">🔋</span>
-          </div>
-          <div class="kpi-value" id="kpi-gen">145<span class="kpi-unit">kWh</span></div>
-          <div class="kpi-delta up" id="kpi-gen-delta">↑ +12% vs ayer</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-accent green"></div>
-          <div class="kpi-header">
-            <span class="kpi-label">Eficiencia Térmica</span>
-            <span class="kpi-icon">🌡️</span>
-          </div>
-          <div class="kpi-value" id="kpi-ef">75<span class="kpi-unit">%</span></div>
-          <div class="kpi-delta neutral" id="kpi-ef-delta">→ Sin cambios · 24h</div>
-        </div>
-      </div>
+        <!-- BIG KPI CARDS: rayo / enchufe / calendario -->
+        <div class="big-grid">
 
-      <!-- MAIN CHARTS ROW -->
-      <div class="charts-row">
-
-        <!-- TENSION & CORRIENTE TIMELINE -->
-        <div class="chart-card">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">Tensión & Corriente — Tiempo Real</div>
-              <div class="chart-subtitle">Datos ESP32 Slave Tensión · Slave Corriente via DynamoDB</div>
+          <!-- ⚡ TENSIÓN Y GENERACIÓN -->
+          <div class="bcard">
+            <div class="bcard-accent"></div>
+            <div class="bcard-top">
+              <div style="flex:1">
+                <div class="bcard-label">Tensión de Salida</div>
+                <div class="bcard-value" id="kpi-tension">220<span class="bcard-unit">V</span></div>
+                <div class="bcard-delta up" id="kpi-tension-d">↑ Nominal estable</div>
+                <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
+                  <div class="bcard-label">Generación Eléctrica</div>
+                  <div class="bcard-value" style="font-size:36px;" id="kpi-gen">145<span class="bcard-unit" style="font-size:14px">kWh</span></div>
+                  <div class="bcard-delta up">↑ +12% vs ayer</div>
+                </div>
+              </div>
+              <div class="bcard-icon blue">
+                <!-- rayo SVG -->
+                <svg viewBox="0 0 24 24" style="width:30px;height:30px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
             </div>
-            <div class="chart-controls">
+          </div>
+
+          <!-- 🔌 CORRIENTE Y ESTADO GENERADOR -->
+          <div class="bcard">
+            <div class="bcard-accent amber"></div>
+            <div class="bcard-top">
+              <div style="flex:1">
+                <div class="bcard-label">Corriente Total</div>
+                <div class="bcard-value" id="kpi-corriente">48<span class="bcard-unit">A</span></div>
+                <div class="bcard-delta warn" id="kpi-corriente-d">⚠ +8A sobre media</div>
+                <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
+                  <div class="bcard-label">Estado Generador</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+                    <div style="width:9px;height:9px;border-radius:50%;background:var(--success);animation:pdot 2s infinite;"></div>
+                    <span style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--success);">Operativo</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">RPM: <span id="kpi-rpm" style="color:var(--text-secondary);font-weight:600;">1480</span> · Eficiencia: <span id="kpi-ef" style="color:var(--text-secondary);font-weight:600;">75%</span></div>
+                </div>
+              </div>
+              <div class="bcard-icon amber">
+                <!-- enchufe SVG -->
+                <svg viewBox="0 0 24 24" style="width:30px;height:30px;stroke:var(--warning);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- 📅 DATOS MENSUALES -->
+          <div class="bcard">
+            <div class="bcard-accent purple"></div>
+            <div class="bcard-top">
+              <div style="flex:1">
+                <div class="bcard-label">Resumen Mensual — Mayo 2026</div>
+                <div class="bcard-value" style="font-size:36px;">3<span class="bcard-unit" style="font-size:14px">940 kWh</span></div>
+                <div class="bcard-delta up">↑ +12.6% vs objetivo</div>
+                <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <div>
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Días operando</div>
+                    <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;">19 <span style="font-size:12px;color:var(--text-muted);font-weight:400;">/ 24</span></div>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Alertas mes</div>
+                    <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--warning);">4</div>
+                  </div>
+                </div>
+              </div>
+              <div class="bcard-icon purple">
+                <!-- calendario SVG -->
+                <svg viewBox="0 0 24 24" style="width:30px;height:30px;stroke:#b48ef0;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ESTADO DEL GENERADOR — NODOS + GAUGES -->
+        <div class="gen-card">
+          <div class="gen-card-header">
+            <div class="gen-card-title">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>
+              Estado de Nodos ESP32
+            </div>
+            <div class="gen-status-badge"><div class="sdot"></div> 3/4 Nodos Online</div>
+          </div>
+          <div class="nodes-row">
+            <div class="ncard ok">
+              <div class="nicon ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/></svg></div>
+              <div><div class="nname">ESP32 Master</div><div class="nsub">Coordinador</div></div>
+              <div class="nping" style="color:var(--success)">12ms</div>
+            </div>
+            <div class="ncard ok">
+              <div class="nicon ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/></svg></div>
+              <div><div class="nname">Slave Velocidad</div><div class="nsub">RPM activo</div></div>
+              <div class="nping" style="color:var(--success)">18ms</div>
+            </div>
+            <div class="ncard warn">
+              <div class="nicon warn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/></svg></div>
+              <div><div class="nname">Slave Tensión</div><div class="nsub">Variación ±3%</div></div>
+              <div class="nping" style="color:var(--warning)">45ms</div>
+            </div>
+            <div class="ncard ok">
+              <div class="nicon ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/></svg></div>
+              <div><div class="nname">Slave Corriente</div><div class="nsub">Midiendo</div></div>
+              <div class="nping" style="color:var(--success)">22ms</div>
+            </div>
+          </div>
+          <div class="gauges-row">
+            <div class="gitem">
+              <div class="g-lbl">Tensión Entrada</div>
+              <div class="g-val" id="g-vin">218<span class="g-unit">V</span></div>
+              <div class="g-bar"><div class="g-fill" id="g-vin-b" style="width:72%;background:var(--accent2)"></div></div>
+            </div>
+            <div class="gitem">
+              <div class="g-lbl">Tensión Salida</div>
+              <div class="g-val" id="g-vout">220<span class="g-unit">V</span></div>
+              <div class="g-bar"><div class="g-fill" id="g-vout-b" style="width:73%;background:var(--accent2)"></div></div>
+            </div>
+            <div class="gitem">
+              <div class="g-lbl">Corriente</div>
+              <div class="g-val" id="g-amp">48<span class="g-unit">A</span></div>
+              <div class="g-bar"><div class="g-fill" id="g-amp-b" style="width:60%;background:var(--warning)"></div></div>
+            </div>
+            <div class="gitem">
+              <div class="g-lbl">Velocidad</div>
+              <div class="g-val" id="g-rpm">1480<span class="g-unit">rpm</span></div>
+              <div class="g-bar"><div class="g-fill" id="g-rpm-b" style="width:74%;background:var(--success)"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATOS MENSUALES -->
+        <div class="monthly-card">
+          <div class="monthly-header">
+            <div class="monthly-title">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Datos Mensuales — 2026
+            </div>
+            <div class="rttag" style="font-size:10px;"><div class="rtdot"></div> PostgreSQL · Power BI</div>
+          </div>
+          <div class="monthly-kpis">
+            <div class="mkpi">
+              <div class="mkpi-lbl">Total generado</div>
+              <div class="mkpi-val">18<span class="mkpi-unit">500 kWh</span></div>
+              <div class="mkpi-note" style="color:var(--success)">↑ +8.2% vs 2025</div>
+            </div>
+            <div class="mkpi">
+              <div class="mkpi-lbl">Mejor mes</div>
+              <div class="mkpi-val" style="color:var(--accent)">Abr<span class="mkpi-unit"> 4 100 kWh</span></div>
+              <div class="mkpi-note" style="color:var(--text-muted)">Máximo histórico</div>
+            </div>
+            <div class="mkpi">
+              <div class="mkpi-lbl">Horas operando</div>
+              <div class="mkpi-val">2<span class="mkpi-unit">847 h</span></div>
+              <div class="mkpi-note" style="color:var(--text-muted)">Disponib. 94.7%</div>
+            </div>
+            <div class="mkpi">
+              <div class="mkpi-lbl">Alertas totales</div>
+              <div class="mkpi-val" style="color:var(--warning)">17</div>
+              <div class="mkpi-note" style="color:var(--success)">↓ -30% vs período ant.</div>
+            </div>
+          </div>
+          <!-- mini chart mensual en home -->
+          <div style="position:relative;height:160px;">
+            <canvas id="chartHomeGen" role="img" aria-label="Gráfico de barras de generación eléctrica mensual 2026.">Generación mensual Ene–May 2026.</canvas>
+          </div>
+        </div>
+
+        <div class="dash-footer">
+          Aguas Nuevo Sur © 2026 &nbsp;·&nbsp; AWS EC2 · Lambda · DynamoDB · PostgreSQL · Power BI &nbsp;·&nbsp; ESP32 MQTT
+        </div>
+      </div>
+
+      <!-- ══ PAGE: GRÁFICOS ══ -->
+      <div id="page-graficos" class="page">
+        <div class="charts-page-header">
+          <h2>Gráficos de Monitoreo</h2>
+          <p>Datos en tiempo real desde los nodos ESP32 · DynamoDB · Lambda</p>
+        </div>
+
+        <!-- Tensión & Corriente -->
+        <div class="chart-fullcard">
+          <div class="cfh">
+            <div>
+              <div class="cft">Tensión & Corriente — Tiempo Real</div>
+              <div class="cfs">ESP32 Slave Tensión · Slave Corriente</div>
+            </div>
+            <div class="ctrls">
               <button class="ctrl-btn active" onclick="setRange(this,'1h')">1H</button>
               <button class="ctrl-btn" onclick="setRange(this,'6h')">6H</button>
               <button class="ctrl-btn" onclick="setRange(this,'24h')">24H</button>
               <button class="ctrl-btn" onclick="setRange(this,'7d')">7D</button>
             </div>
           </div>
-          <div class="legend-row">
-            <div class="legend-item"><div class="legend-dot" style="background:#378ADD"></div> Tensión (V)</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#EF9F27"></div> Corriente (A)</div>
-            <div class="legend-item"><div class="legend-dot" style="background:rgba(226,75,74,0.5);border:1px dashed #E24B4A"></div> Límite crítico</div>
+          <div class="leg-row">
+            <div class="leg-i"><div class="leg-sq" style="background:#378ADD"></div> Tensión (V)</div>
+            <div class="leg-i"><div class="leg-sq" style="background:#EF9F27"></div> Corriente (A)</div>
+            <div class="leg-i"><div class="leg-sq" style="background:rgba(226,75,74,0.5);border:1px dashed #E24B4A"></div> Límite crítico</div>
           </div>
-          <div style="position:relative;height:260px;">
-            <canvas id="chartTensionCorriente" role="img" aria-label="Gráfico de tensión y corriente en tiempo real. Línea azul para voltaje, línea naranja para corriente.">Tensión: 220V promedio. Corriente: 48A promedio con pico a 56A.</canvas>
+          <div style="position:relative;height:300px;">
+            <canvas id="chartTC" role="img" aria-label="Gráfico de tensión y corriente en tiempo real.">Tensión ~220V, Corriente ~48A.</canvas>
           </div>
         </div>
 
-        <!-- MINI GAUGES + RPM -->
-        <div class="chart-card">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">Estado del Generador</div>
-              <div class="chart-subtitle">Parámetros actuales · ESP32 Slave Velocidad</div>
+        <div class="charts-two">
+          <!-- Generación mensual -->
+          <div class="chart-fullcard">
+            <div class="cfh">
+              <div>
+                <div class="cft">Generación Mensual</div>
+                <div class="cfs">kWh producidos vs objetivo</div>
+              </div>
             </div>
-            <div class="realtime-tag" style="font-size:9px"><div class="rt-dot"></div> LIVE</div>
-          </div>
-          <div class="gauges-grid" style="margin-bottom:16px;">
-            <div class="gauge-wrap">
-              <div class="gauge-label">Tensión entrada</div>
-              <div class="gauge-value" id="g-v-in">218<span class="gauge-unit">V</span></div>
-              <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="g-v-in-bar" style="width:72%;background:var(--accent2)"></div></div>
+            <div class="leg-row">
+              <div class="leg-i"><div class="leg-sq" style="background:#185FA5"></div> kWh generados</div>
+              <div class="leg-i"><div class="leg-sq" style="background:rgba(29,158,117,0.7);border:1px dashed #1D9E75"></div> Objetivo 3 500 kWh</div>
             </div>
-            <div class="gauge-wrap">
-              <div class="gauge-label">Tensión salida</div>
-              <div class="gauge-value" id="g-v-out">220<span class="gauge-unit">V</span></div>
-              <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="g-v-out-bar" style="width:73%;background:var(--accent2)"></div></div>
-            </div>
-            <div class="gauge-wrap">
-              <div class="gauge-label">Corriente</div>
-              <div class="gauge-value" id="g-i">48<span class="gauge-unit">A</span></div>
-              <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="g-i-bar" style="width:62%;background:var(--warning)"></div></div>
-            </div>
-            <div class="gauge-wrap">
-              <div class="gauge-label">Velocidad</div>
-              <div class="gauge-value" id="g-rpm">1480<span class="gauge-unit">rpm</span></div>
-              <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="g-rpm-bar" style="width:74%;background:var(--success)"></div></div>
+            <div style="position:relative;height:240px;">
+              <canvas id="chartGen" role="img" aria-label="Generación mensual kWh 2026.">Ene 3200, Feb 3800, Mar 3500, Abr 4100, May 3900.</canvas>
             </div>
           </div>
-          <div style="position:relative;height:110px;">
-            <canvas id="chartRpm" role="img" aria-label="Gráfico de barras de RPM en tiempo real.">RPM promedio 1480, variando entre 1400 y 1520.</canvas>
+
+          <!-- RPM tiempo real -->
+          <div class="chart-fullcard">
+            <div class="cfh">
+              <div>
+                <div class="cft">Velocidad del Generador</div>
+                <div class="cfs">RPM · ESP32 Slave Velocidad</div>
+              </div>
+              <div class="rttag" style="font-size:9px;"><div class="rtdot"></div> LIVE</div>
+            </div>
+            <div class="leg-row">
+              <div class="leg-i"><div class="leg-sq" style="background:#1D9E75"></div> Normal (&lt;1500)</div>
+              <div class="leg-i"><div class="leg-sq" style="background:#EF9F27"></div> Alerta (1500–1600)</div>
+              <div class="leg-i"><div class="leg-sq" style="background:#E24B4A"></div> Crítico (&gt;1600)</div>
+            </div>
+            <div style="position:relative;height:240px;">
+              <canvas id="chartRpm" role="img" aria-label="RPM generador en tiempo real.">RPM promedio 1480.</canvas>
+            </div>
           </div>
+        </div>
+
+        <!-- Distribución potencia -->
+        <div class="charts-two">
+          <div class="chart-fullcard">
+            <div class="cfh">
+              <div>
+                <div class="cft">Distribución de Potencia</div>
+                <div class="cfs">Red eléctrica vs Baterías</div>
+              </div>
+            </div>
+            <div style="position:relative;height:220px;">
+              <canvas id="chartDist" role="img" aria-label="Distribución de potencia. Red 72%, Baterías 28%.">Red 72%, Baterías 28%.</canvas>
+            </div>
+            <div class="leg-row" style="justify-content:center;margin-top:12px;">
+              <div class="leg-i"><div class="leg-sq" style="background:#185FA5"></div> Red eléctrica 72%</div>
+              <div class="leg-i"><div class="leg-sq" style="background:#1D9E75"></div> Baterías 28%</div>
+            </div>
+          </div>
+
+          <!-- Tensión diaria por hora -->
+          <div class="chart-fullcard">
+            <div class="cfh">
+              <div>
+                <div class="cft">Tensión Promedio por Hora</div>
+                <div class="cfs">Hoy · Slave Tensión</div>
+              </div>
+            </div>
+            <div class="leg-row">
+              <div class="leg-i"><div class="leg-sq" style="background:#378ADD"></div> Tensión (V)</div>
+              <div class="leg-i"><div class="leg-sq" style="background:rgba(226,75,74,0.5);border:1px dashed #E24B4A"></div> Límite sup. 230V</div>
+            </div>
+            <div style="position:relative;height:220px;">
+              <canvas id="chartVHour" role="img" aria-label="Tensión promedio por hora del día de hoy.">Tensión entre 215V y 228V durante el día.</canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-footer">
+          Aguas Nuevo Sur © 2026 &nbsp;·&nbsp; AWS EC2 · Lambda · DynamoDB · PostgreSQL · Power BI
         </div>
       </div>
 
-      <!-- CHARTS ROW 2 -->
-      <div class="charts-row2">
-        <div class="chart-card">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">Generación Eléctrica — Mensual</div>
-              <div class="chart-subtitle">kWh producidos · PostgreSQL / Power BI</div>
+      <!-- ══ PAGE: ALERTAS ══ -->
+      <div id="page-alertas" class="page">
+        <div class="alerts-card">
+          <div class="sec-header">
+            <div class="sec-title">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Alertas Recientes IoT
+            </div>
+            <div class="filter-row">
+              <select class="fsel"><option>Todos los niveles</option><option>Crítico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
+              <select class="fsel"><option>Todos los nodos</option><option>Slave Tensión</option><option>Slave Corriente</option><option>Slave Velocidad</option><option>Master</option></select>
             </div>
           </div>
-          <div class="legend-row">
-            <div class="legend-item"><div class="legend-dot" style="background:#185FA5"></div> kWh generados</div>
-            <div class="legend-item"><div class="legend-dot" style="background:rgba(29,158,117,0.6)"></div> Objetivo</div>
-          </div>
-          <div style="position:relative;height:200px;">
-            <canvas id="chartGen" role="img" aria-label="Gráfico de barras de generación eléctrica mensual en kWh.">Generación mensual: Ene 3200, Feb 3800, Mar 3500, Abr 4100, May 3900 kWh.</canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">Distribución de Potencia</div>
-              <div class="chart-subtitle">Red eléctrica vs Baterías</div>
-            </div>
-          </div>
-          <div style="position:relative;height:160px;">
-            <canvas id="chartDist" role="img" aria-label="Gráfico de dona mostrando distribución de potencia entre red eléctrica y baterías.">Red eléctrica 72%, baterías 28%.</canvas>
-          </div>
-          <div class="legend-row" style="justify-content:center;margin-top:12px;">
-            <div class="legend-item"><div class="legend-dot" style="background:#378ADD"></div> Red eléctrica 72%</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div> Baterías 28%</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
-            <div style="background:var(--bg-card2);border-radius:8px;padding:12px;text-align:center;">
-              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Red</div>
-              <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--accent)">104<span style="font-size:12px;font-weight:400;color:var(--text-secondary);margin-left:2px">kW</span></div>
-            </div>
-            <div style="background:var(--bg-card2);border-radius:8px;padding:12px;text-align:center;">
-              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Baterías</div>
-              <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--success)">41<span style="font-size:12px;font-weight:400;color:var(--text-secondary);margin-left:2px">kW</span></div>
-            </div>
+          <table class="alert-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Fecha / Hora</th><th>Nodo / Sensor</th><th>Evento</th><th>Parámetro</th><th>Nivel</th><th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="aid">AL-001</span></td><td>19 May 2026 · 10:10</td><td>Slave Tensión T101</td><td>Tensión fuera de rango</td><td>234V (límite 230V)</td><td><span class="rbadge r-critico">Crítico</span></td><td><span class="alink">Revisar regulador</span></td></tr>
+              <tr><td><span class="aid">AL-002</span></td><td>18 May 2026 · 15:12</td><td>Nodo IoT 04</td><td>Pérdida de conexión &gt;30s</td><td>Timeout MQTT</td><td><span class="rbadge r-medio">Medio</span></td><td><span class="alink">Reiniciar gateway</span></td></tr>
+              <tr><td><span class="aid">AL-003</span></td><td>18 May 2026 · 14:15</td><td>Slave Corriente I202</td><td>Sobrecorriente detectada</td><td>56A (límite 50A)</td><td><span class="rbadge r-alto">Alto</span></td><td><span class="alink">Mantención urgente</span></td></tr>
+              <tr><td><span class="aid">AL-004</span></td><td>17 May 2026 · 13:15</td><td>Slave Velocidad RPM</td><td>RPM fuera de rango</td><td>1620 RPM</td><td><span class="rbadge r-bajo">Bajo</span></td><td><span class="alink">Monitorear ciclo</span></td></tr>
+            </tbody>
+          </table>
+          <div class="pagination">
+            <button class="pbtn">‹</button>
+            <button class="pbtn">1</button><button class="pbtn active">2</button><button class="pbtn">3</button><button class="pbtn">4</button><button class="pbtn">5</button>
+            <button class="pbtn">...</button><button class="pbtn">20</button>
+            <button class="pbtn">›</button>
           </div>
         </div>
-      </div>
-
-      <!-- ALERTS TABLE -->
-      <div class="alerts-card">
-        <div class="section-header">
-          <h3>Alertas Recientes IoT</h3>
-          <div class="filter-row">
-            <select class="filter-select">
-              <option>Todos los niveles</option>
-              <option>Crítico</option>
-              <option>Alto</option>
-              <option>Medio</option>
-              <option>Bajo</option>
-            </select>
-            <select class="filter-select">
-              <option>Todos los nodos</option>
-              <option>ESP32 Master</option>
-              <option>Slave Tensión</option>
-              <option>Slave Corriente</option>
-              <option>Slave Velocidad</option>
-            </select>
-          </div>
-        </div>
-        <div class="section-tabs">
-          <div class="section-tab active">Activas (4)</div>
-          <div class="section-tab">Resueltas (23)</div>
-          <div class="section-tab">Todas</div>
-        </div>
-        <table class="alert-table">
-          <thead>
-            <tr>
-              <th>ID Alerta</th>
-              <th>Fecha / Hora</th>
-              <th>Nodo / Sensor</th>
-              <th>Evento</th>
-              <th>Parámetro</th>
-              <th>Nivel de Riesgo</th>
-              <th>Acción Sugerida</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="alert-id">AL-001</span></td>
-              <td>19 May, 2026 · 10:10 AM</td>
-              <td>Slave Tensión (T101)</td>
-              <td>Tensión fuera de rango nominal</td>
-              <td>234V (límite: 230V)</td>
-              <td><span class="risk-badge risk-critico">Crítico</span></td>
-              <td><span class="action-link">Revisar regulador → reiniciar</span></td>
-            </tr>
-            <tr>
-              <td><span class="alert-id">AL-002</span></td>
-              <td>18 May, 2026 · 03:12 PM</td>
-              <td>Nodo IoT 04</td>
-              <td>Pérdida de conexión &gt;30s</td>
-              <td>Timeout MQTT</td>
-              <td><span class="risk-badge risk-medio">Medio</span></td>
-              <td><span class="action-link">Reiniciar gateway de red</span></td>
-            </tr>
-            <tr>
-              <td><span class="alert-id">AL-003</span></td>
-              <td>18 May, 2026 · 02:15 PM</td>
-              <td>Slave Corriente (I202)</td>
-              <td>Sobrecorriente detectada</td>
-              <td>56A (límite: 50A)</td>
-              <td><span class="risk-badge risk-alto">Alto</span></td>
-              <td><span class="action-link">Mantenimiento preventivo urgente</span></td>
-            </tr>
-            <tr>
-              <td><span class="alert-id">AL-004</span></td>
-              <td>17 May, 2026 · 01:15 PM</td>
-              <td>Slave Velocidad (RPM)</td>
-              <td>RPM fuera de rango</td>
-              <td>1620 RPM (límite: 1600)</td>
-              <td><span class="risk-badge risk-bajo">Bajo</span></td>
-              <td><span class="action-link">Monitorear · siguiente ciclo</span></td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="pagination">
-          <button class="page-btn">‹</button>
-          <button class="page-btn">1</button>
-          <button class="page-btn active">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn">4</button>
-          <button class="page-btn">5</button>
-          <button class="page-btn">...</button>
-          <button class="page-btn">20</button>
-          <button class="page-btn">›</button>
-        </div>
-      </div>
-
-      <!-- FOOTER -->
-      <div style="text-align:center;padding:16px 0;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);">
-        Aguas Nuevo Sur © 2026 &nbsp;·&nbsp; Stack: AWS EC2 · Lambda · DynamoDB · PostgreSQL · Power BI &nbsp;·&nbsp; Nodos ESP32 vía MQTT
+        <div class="dash-footer">Aguas Nuevo Sur © 2026 &nbsp;·&nbsp; AWS EC2 · Lambda · DynamoDB · PostgreSQL</div>
       </div>
 
     </div>
@@ -955,287 +652,212 @@
 </div>
 
 <script>
-// ─── AUTH ────────────────────────────────────────
-function doLogin() {
-  const u = document.getElementById('login-user').value;
-  const p = document.getElementById('login-pass').value;
-  if (!u || !p) { alert('Ingrese usuario y contraseña.'); return; }
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  initCharts();
-  startRealtime();
-  startClock();
+// ── AUTH ──
+function doLogin(){
+  const u=document.getElementById('lu').value, p=document.getElementById('lp').value;
+  if(!u||!p){alert('Ingrese usuario y contraseña.');return;}
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  initAllCharts(); startRT(); startClock();
+}
+function doLogout(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  stopRT();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')doLogin();});
+
+// ── CLOCK ──
+function startClock(){
+  const el=document.getElementById('clock');
+  const t=()=>{el.textContent=new Date().toLocaleTimeString('es-CL');};
+  t(); setInterval(t,1000);
 }
 
-function doLogout() {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  stopRealtime();
+// ── PAGES ──
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const idx={home:0,graficos:1,alertas:2};
+  document.querySelectorAll('.ntab')[idx[id]]?.classList.add('active');
+  document.querySelectorAll('.nav-item')[idx[id]]?.classList.add('active');
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
-});
-
-// ─── CLOCK ──────────────────────────────────────
-function startClock() {
-  const el = document.getElementById('clock');
-  function tick() {
-    const now = new Date();
-    el.textContent = now.toLocaleTimeString('es-CL');
-  }
-  tick();
-  setInterval(tick, 1000);
-}
-
-// ─── CHART RANGE TOGGLE ─────────────────────────
-function setRange(btn, range) {
-  document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+// ── RANGE TOGGLE ──
+function setRange(btn,range){
+  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  if (window.tcChart) {
-    const labels = generateLabels(range);
-    window.tcChart.data.labels = labels;
-    window.tcChart.data.datasets[0].data = labels.map(() => Math.round(215 + Math.random() * 12));
-    window.tcChart.data.datasets[1].data = labels.map(() => Math.round(38 + Math.random() * 22));
-    window.tcChart.update('active');
-  }
+  if(!window.chartTC)return;
+  const labels=genLabels(range);
+  chartTC.data.labels=labels;
+  chartTC.data.datasets[0].data=labels.map(()=>Math.round(215+Math.random()*12));
+  chartTC.data.datasets[1].data=labels.map(()=>Math.round(38+Math.random()*22));
+  chartTC.data.datasets[2].data=labels.map(()=>50);
+  chartTC.update('active');
 }
 
-function generateLabels(range) {
-  const counts = { '1h': 12, '6h': 18, '24h': 24, '7d': 14 };
-  const count = counts[range] || 12;
-  const labels = [];
-  const now = new Date();
-  for (let i = count - 1; i >= 0; i--) {
-    const d = new Date(now - i * (range === '7d' ? 86400000 : range === '24h' ? 3600000 : range === '6h' ? 1200000 : 300000));
-    if (range === '7d') {
-      labels.push(d.toLocaleDateString('es-CL', { month:'short', day:'numeric' }));
-    } else {
-      labels.push(d.toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit' }));
-    }
+function genLabels(range){
+  const n={h1:12,h6:18,h24:24,d7:14}[range.replace(/\D/g,'')+''+range[0]] || 12;
+  const counts={'1h':12,'6h':18,'24h':24,'7d':14};
+  const count=counts[range]||12;
+  const labels=[]; const now=new Date();
+  for(let i=count-1;i>=0;i--){
+    const d=new Date(now-i*(range==='7d'?86400000:range==='24h'?3600000:range==='6h'?1200000:300000));
+    labels.push(range==='7d'?d.toLocaleDateString('es-CL',{month:'short',day:'numeric'}):d.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}));
   }
   return labels;
 }
 
-// ─── CHARTS ─────────────────────────────────────
-function initCharts() {
-  Chart.defaults.color = '#7FAFD4';
-  Chart.defaults.borderColor = 'rgba(55,138,221,0.1)';
-  Chart.defaults.font.family = 'Inter';
+// ── CHARTS ──
+function initAllCharts(){
+  Chart.defaults.color='#7FAFD4';
+  Chart.defaults.borderColor='rgba(55,138,221,0.1)';
+  Chart.defaults.font.family='Inter';
 
-  // 1. Tensión & Corriente
-  const tcLabels = generateLabels('1h');
-  const tcCtx = document.getElementById('chartTensionCorriente').getContext('2d');
-  window.tcChart = new Chart(tcCtx, {
-    type: 'line',
-    data: {
-      labels: tcLabels,
-      datasets: [
-        {
-          label: 'Tensión (V)',
-          data: tcLabels.map(() => Math.round(215 + Math.random() * 12)),
-          borderColor: '#378ADD',
-          backgroundColor: 'rgba(55,138,221,0.08)',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointBackgroundColor: '#378ADD',
-          tension: 0.4,
-          fill: true,
-          yAxisID: 'yV'
-        },
-        {
-          label: 'Corriente (A)',
-          data: tcLabels.map(() => Math.round(38 + Math.random() * 22)),
-          borderColor: '#EF9F27',
-          backgroundColor: 'rgba(239,159,39,0.06)',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointBackgroundColor: '#EF9F27',
-          borderDash: [4, 2],
-          tension: 0.4,
-          fill: false,
-          yAxisID: 'yI'
-        },
-        {
-          label: 'Límite crítico (A)',
-          data: tcLabels.map(() => 50),
-          borderColor: 'rgba(226,75,74,0.5)',
-          borderWidth: 1.5,
-          borderDash: [6, 3],
-          pointRadius: 0,
-          fill: false,
-          yAxisID: 'yI'
-        }
+  // 1. Home mini gen
+  const hgCtx=document.getElementById('chartHomeGen').getContext('2d');
+  window.chartHomeGen=new Chart(hgCtx,{
+    type:'bar',
+    data:{
+      labels:['Ene','Feb','Mar','Abr','May'],
+      datasets:[
+        {label:'kWh',data:[3200,3800,3500,4100,3900],backgroundColor:['rgba(24,95,165,0.7)','rgba(24,95,165,0.7)','rgba(24,95,165,0.7)','rgba(0,201,255,0.7)','rgba(24,95,165,0.7)'],borderRadius:6,borderSkipped:false},
+        {label:'Objetivo',data:[3500,3500,3500,3500,3500],type:'line',borderColor:'rgba(29,158,117,0.7)',borderWidth:2,borderDash:[5,3],pointRadius:0,fill:false}
       ]
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: 'rgba(55,138,221,0.07)' }, ticks: { maxTicksLimit: 8, font: { size: 11 } } },
-        yV: {
-          type: 'linear', position: 'left',
-          min: 200, max: 240,
-          grid: { color: 'rgba(55,138,221,0.07)' },
-          ticks: { callback: v => v + 'V', font: { size: 11 } },
-          title: { display: true, text: 'Tensión (V)', color: '#378ADD', font: { size: 11 } }
-        },
-        yI: {
-          type: 'linear', position: 'right',
-          min: 20, max: 70,
-          grid: { drawOnChartArea: false },
-          ticks: { callback: v => v + 'A', font: { size: 11 } },
-          title: { display: true, text: 'Corriente (A)', color: '#EF9F27', font: { size: 11 } }
-        }
-      }
-    }
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false},ticks:{font:{size:12}}},
+      y:{grid:{color:'rgba(55,138,221,0.07)'},ticks:{callback:v=>(v/1000).toFixed(1)+'k',font:{size:11}}}
+    }}
   });
 
-  // 2. RPM mini
-  const rpmCtx = document.getElementById('chartRpm').getContext('2d');
-  const rpmData = Array.from({ length: 14 }, () => Math.round(1400 + Math.random() * 200));
-  window.rpmChart = new Chart(rpmCtx, {
-    type: 'bar',
-    data: {
-      labels: rpmData.map((_, i) => ''),
-      datasets: [{
-        label: 'RPM',
-        data: rpmData,
-        backgroundColor: rpmData.map(v => v > 1550 ? 'rgba(226,75,74,0.7)' : v > 1500 ? 'rgba(239,159,39,0.7)' : 'rgba(29,158,117,0.7)'),
-        borderRadius: 3,
-        borderSkipped: false
-      }]
+  // 2. Tensión & Corriente
+  const tcLabels=genLabels('1h');
+  const tcCtx=document.getElementById('chartTC').getContext('2d');
+  window.chartTC=new Chart(tcCtx,{
+    type:'line',
+    data:{
+      labels:tcLabels,
+      datasets:[
+        {label:'Tensión (V)',data:tcLabels.map(()=>Math.round(215+Math.random()*12)),borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',borderWidth:2,pointRadius:2,pointBackgroundColor:'#378ADD',tension:0.4,fill:true,yAxisID:'yV'},
+        {label:'Corriente (A)',data:tcLabels.map(()=>Math.round(38+Math.random()*22)),borderColor:'#EF9F27',backgroundColor:'rgba(239,159,39,0.04)',borderWidth:2,pointRadius:2,pointBackgroundColor:'#EF9F27',borderDash:[4,2],tension:0.4,fill:false,yAxisID:'yI'},
+        {label:'Límite (A)',data:tcLabels.map(()=>50),borderColor:'rgba(226,75,74,0.45)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false,yAxisID:'yI'}
+      ]
     },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw + ' RPM' } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { display: false } },
-        y: { min: 1300, max: 1650, grid: { color: 'rgba(55,138,221,0.07)' }, ticks: { font: { size: 10 }, callback: v => v + '' } }
-      }
-    }
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false}},scales:{
+      x:{grid:{color:'rgba(55,138,221,0.07)'},ticks:{maxTicksLimit:8,font:{size:11}}},
+      yV:{type:'linear',position:'left',min:200,max:240,grid:{color:'rgba(55,138,221,0.07)'},ticks:{callback:v=>v+'V',font:{size:11}},title:{display:true,text:'Tensión (V)',color:'#378ADD',font:{size:11}}},
+      yI:{type:'linear',position:'right',min:20,max:70,grid:{drawOnChartArea:false},ticks:{callback:v=>v+'A',font:{size:11}},title:{display:true,text:'Corriente (A)',color:'#EF9F27',font:{size:11}}}
+    }}
   });
 
   // 3. Generación mensual
-  const genCtx = document.getElementById('chartGen').getContext('2d');
-  window.genChart = new Chart(genCtx, {
-    type: 'bar',
-    data: {
-      labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-      datasets: [
-        {
-          label: 'kWh generados',
-          data: [3200, 3800, 3500, 4100, 3900, 0, 0, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(24,95,165,0.75)',
-          borderRadius: 5,
-          borderSkipped: false
-        },
-        {
-          label: 'Objetivo',
-          data: [3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500, 3500],
-          type: 'line',
-          borderColor: 'rgba(29,158,117,0.7)',
-          borderWidth: 2,
-          borderDash: [5, 3],
-          pointRadius: 0,
-          fill: false
-        }
+  const genCtx=document.getElementById('chartGen').getContext('2d');
+  window.chartGen=new Chart(genCtx,{
+    type:'bar',
+    data:{
+      labels:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+      datasets:[
+        {label:'kWh',data:[3200,3800,3500,4100,3900,0,0,0,0,0,0,0],backgroundColor:'rgba(24,95,165,0.75)',borderRadius:5,borderSkipped:false},
+        {label:'Objetivo',data:[3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500,3500],type:'line',borderColor:'rgba(29,158,117,0.7)',borderWidth:2,borderDash:[5,3],pointRadius:0,fill:false}
       ]
     },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
-        y: { grid: { color: 'rgba(55,138,221,0.07)' }, ticks: { callback: v => (v/1000).toFixed(1) + 'k', font: { size: 11 } } }
-      }
-    }
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false},ticks:{font:{size:11}}},
+      y:{grid:{color:'rgba(55,138,221,0.07)'},ticks:{callback:v=>(v/1000).toFixed(1)+'k',font:{size:11}}}
+    }}
   });
 
-  // 4. Distribución potencia (donut)
-  const distCtx = document.getElementById('chartDist').getContext('2d');
-  window.distChart = new Chart(distCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Red eléctrica', 'Baterías'],
-      datasets: [{
-        data: [72, 28],
-        backgroundColor: ['#185FA5', '#1D9E75'],
-        borderColor: '#0D1B2A',
-        borderWidth: 3,
-        hoverOffset: 4
-      }]
+  // 4. RPM
+  const rpmData=Array.from({length:16},()=>Math.round(1400+Math.random()*220));
+  const rpmCtx=document.getElementById('chartRpm').getContext('2d');
+  window.chartRpm=new Chart(rpmCtx,{
+    type:'bar',
+    data:{
+      labels:rpmData.map(()=>''),
+      datasets:[{label:'RPM',data:rpmData,backgroundColor:rpmData.map(v=>v>1600?'rgba(226,75,74,0.75)':v>1500?'rgba(239,159,39,0.75)':'rgba(29,158,117,0.75)'),borderRadius:4,borderSkipped:false}]
     },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '68%',
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.raw + '%' } } }
-    }
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw+' RPM'}}},scales:{
+      x:{grid:{display:false},ticks:{display:false}},
+      y:{min:1300,max:1700,grid:{color:'rgba(55,138,221,0.07)'},ticks:{font:{size:11}}}
+    }}
+  });
+
+  // 5. Distribución potencia
+  const distCtx=document.getElementById('chartDist').getContext('2d');
+  window.chartDist=new Chart(distCtx,{
+    type:'doughnut',
+    data:{labels:['Red eléctrica','Baterías'],datasets:[{data:[72,28],backgroundColor:['#185FA5','#1D9E75'],borderColor:'#0D1B2A',borderWidth:4,hoverOffset:5}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.raw+'%'}}}}
+  });
+
+  // 6. Tensión por hora
+  const hoursLabels=Array.from({length:24},(_,i)=>i.toString().padStart(2,'0')+':00');
+  const vhCtx=document.getElementById('chartVHour').getContext('2d');
+  window.chartVHour=new Chart(vhCtx,{
+    type:'line',
+    data:{
+      labels:hoursLabels,
+      datasets:[
+        {label:'Tensión (V)',data:hoursLabels.map(()=>Math.round(215+Math.random()*13)),borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.08)',borderWidth:2,pointRadius:2,tension:0.4,fill:true},
+        {label:'Límite 230V',data:hoursLabels.map(()=>230),borderColor:'rgba(226,75,74,0.4)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+      x:{grid:{color:'rgba(55,138,221,0.06)'},ticks:{maxTicksLimit:8,font:{size:11}}},
+      y:{min:205,max:235,grid:{color:'rgba(55,138,221,0.07)'},ticks:{callback:v=>v+'V',font:{size:11}}}
+    }}
   });
 }
 
-// ─── REALTIME SIMULATION ─────────────────────────
-let rtInterval = null;
+// ── REALTIME ──
+let rtInt=null;
+function startRT(){
+  rtInt=setInterval(()=>{
+    const v=218+Math.round(Math.random()*8);
+    const a=42+Math.round(Math.random()*16);
+    const rpm=1420+Math.round(Math.random()*200);
+    const ef=72+Math.round(Math.random()*6);
 
-function startRealtime() {
-  rtInterval = setInterval(() => {
-    const t = 218 + Math.round(Math.random() * 8);
-    const i = 42 + Math.round(Math.random() * 16);
-    const rpm = 1420 + Math.round(Math.random() * 200);
-    const ef = 72 + Math.round(Math.random() * 6);
-
-    // KPIs
-    document.getElementById('kpi-tension').innerHTML = t + '<span class="kpi-unit">V</span>';
-    document.getElementById('kpi-corriente').innerHTML = i + '<span class="kpi-unit">A</span>';
-    document.getElementById('kpi-ef').innerHTML = ef + '<span class="kpi-unit">%</span>';
+    // KPIs home
+    document.getElementById('kpi-tension').innerHTML=v+'<span class="bcard-unit">V</span>';
+    document.getElementById('kpi-corriente').innerHTML=a+'<span class="bcard-unit">A</span>';
+    document.getElementById('kpi-rpm').textContent=rpm;
+    document.getElementById('kpi-ef').textContent=ef+'%';
 
     // Gauges
-    document.getElementById('g-v-in').innerHTML = (t-2) + '<span class="gauge-unit">V</span>';
-    document.getElementById('g-v-out').innerHTML = t + '<span class="gauge-unit">V</span>';
-    document.getElementById('g-i').innerHTML = i + '<span class="gauge-unit">A</span>';
-    document.getElementById('g-rpm').innerHTML = rpm + '<span class="gauge-unit">rpm</span>';
+    document.getElementById('g-vin').innerHTML=(v-2)+'<span class="g-unit">V</span>';
+    document.getElementById('g-vout').innerHTML=v+'<span class="g-unit">V</span>';
+    document.getElementById('g-amp').innerHTML=a+'<span class="g-unit">A</span>';
+    document.getElementById('g-rpm').innerHTML=rpm+'<span class="g-unit">rpm</span>';
+    document.getElementById('g-vin-b').style.width=Math.round((v/240)*100)+'%';
+    document.getElementById('g-vout-b').style.width=Math.round((v/240)*100)+'%';
+    document.getElementById('g-amp-b').style.width=Math.round((a/80)*100)+'%';
+    document.getElementById('g-amp-b').style.background=a>50?'var(--danger)':a>45?'var(--warning)':'var(--success)';
+    document.getElementById('g-rpm-b').style.width=Math.round((rpm/2000)*100)+'%';
 
-    document.getElementById('g-v-in-bar').style.width = Math.round((t/240)*100) + '%';
-    document.getElementById('g-v-out-bar').style.width = Math.round((t/240)*100) + '%';
-    document.getElementById('g-i-bar').style.width = Math.round((i/80)*100) + '%';
-    document.getElementById('g-rpm-bar').style.width = Math.round((rpm/2000)*100) + '%';
-
-    // Corriente bar color
-    document.getElementById('g-i-bar').style.background = i > 50 ? 'var(--danger)' : i > 45 ? 'var(--warning)' : 'var(--success)';
-
-    // Chart update
-    if (window.tcChart) {
-      const now = new Date();
-      const label = now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
-      window.tcChart.data.labels.push(label);
-      window.tcChart.data.datasets[0].data.push(t);
-      window.tcChart.data.datasets[1].data.push(i);
-      window.tcChart.data.datasets[2].data.push(50);
-      if (window.tcChart.data.labels.length > 20) {
-        window.tcChart.data.labels.shift();
-        window.tcChart.data.datasets.forEach(d => d.data.shift());
-      }
-      window.tcChart.update('active');
+    // TC chart update
+    if(window.chartTC){
+      const lbl=new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+      chartTC.data.labels.push(lbl);
+      chartTC.data.datasets[0].data.push(v);
+      chartTC.data.datasets[1].data.push(a);
+      chartTC.data.datasets[2].data.push(50);
+      if(chartTC.data.labels.length>22){chartTC.data.labels.shift();chartTC.data.datasets.forEach(d=>d.data.shift());}
+      chartTC.update('active');
     }
-
     // RPM chart update
-    if (window.rpmChart) {
-      window.rpmChart.data.datasets[0].data.push(rpm);
-      window.rpmChart.data.datasets[0].data.shift();
-      window.rpmChart.data.datasets[0].backgroundColor = window.rpmChart.data.datasets[0].data.map(v =>
-        v > 1550 ? 'rgba(226,75,74,0.7)' : v > 1500 ? 'rgba(239,159,39,0.7)' : 'rgba(29,158,117,0.7)'
-      );
-      window.rpmChart.update('active');
+    if(window.chartRpm){
+      chartRpm.data.datasets[0].data.push(rpm);
+      chartRpm.data.datasets[0].data.shift();
+      chartRpm.data.datasets[0].backgroundColor=chartRpm.data.datasets[0].data.map(v=>v>1600?'rgba(226,75,74,0.75)':v>1500?'rgba(239,159,39,0.75)':'rgba(29,158,117,0.75)');
+      chartRpm.update('active');
     }
-
-  }, 2500);
+  },2500);
 }
-
-function stopRealtime() {
-  if (rtInterval) clearInterval(rtInterval);
-}
+function stopRT(){if(rtInt)clearInterval(rtInt);}
 </script>
 </body>
 </html>
